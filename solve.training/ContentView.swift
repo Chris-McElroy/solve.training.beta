@@ -7,18 +7,50 @@
 
 import SwiftUI
 
+let alg = Alg("D' R' D F2 D' R D R' F2 R")!
+let algInput: AlgInput = AlgInput(alg: alg)
+
 struct ContentView: View {
+    @State var input: String = ""
+    @FocusState var focus: Bool
+    @State var progress: Int = 0
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Spacer()
+            Text("usp")
+            CubeView()
+            Text(algInput.stringStart(completed: progress))
+                .foregroundStyle(.green)
+                + Text(algInput.stringEnd(completed: progress))
+            Spacer()
+            ZStack {
+                TextField("input", text: $input)
+                    .focused($focus)
+                    .textFieldStyle(.plain)
+                    .opacity(0.0000001)
+            }
         }
-        .padding()
+        .padding(.all)
+        .background(.black)
+        .onAppear() {
+            focus = true
+            Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { _ in
+                print("hi")
+                Cube.main.update.toggle()
+            })
+        }
+        .onChange(of: input, {
+            if input.isEmpty { return }
+            let new = input.removeLast()
+            if algInput.moves[progress].inputChr.contains(new) {
+                progress += 1
+                if progress == algInput.moves.count {
+                    Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
+                        progress = 0
+                    })
+                }
+            }
+        })
     }
-}
-
-#Preview {
-    ContentView()
 }
