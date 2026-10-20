@@ -11,13 +11,8 @@ import RealityKit
 struct CubeView: View {
     @ObservedObject var cube = Cube.main
     
-    @State var cubies: [CubieView] = generateFacelet(.U)
-    @State var facelets: [FaceletView] = generateFacelet(.U)
-    
     var body: some View {
         RealityView { content in
-            // figure out how to have facelet colors update dynamically (maybe with names???)
-            
             // try changing perspective depth
             
             // have transparency toggle when hitting space
@@ -26,9 +21,7 @@ struct CubeView: View {
             
             content.add(cubeView)
         } update: { content in
-            content.entities.first!.children.forEach {
-                ($0 as! ModelEntity).model?.materials.first!
-            }
+            
         }
         .background(.black)
     }
@@ -144,7 +137,7 @@ class CubieView {
         }
         
         // place cubie relative to base
-        entity.transform = CubieView.getTransform(for: cubie)
+        entity.transform = Transform(translation: SIMD3<Float>(Float(cubie.x), Float(cubie.y), Float(cubie.z)))
         
         Self.cubies.append(self)
     }
@@ -156,16 +149,6 @@ class CubieView {
         for cubie in cubies {
             cubie.entity.model?.materials = [material]
         }
-    }
-    
-    static func getTransform(for cubie: Cubie) -> Transform {
-        let value = cubie.rawValue > 12 ? cubie.rawValue : cubie.rawValue + 1
-        
-        let x = (value % 3) - 1
-        let y = (value/3 % 3) - 1
-        let z = (value/9) - 1
-        
-        return Transform(translation: SIMD3<Float>(Float(x), Float(y), Float(z)))
     }
 }
 

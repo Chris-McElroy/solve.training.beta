@@ -34,37 +34,37 @@ struct Alg {
 }
 
 struct Move {
-    let face: Face
+    let slice: Slice
     let turn: Turn
     
-    init(_ face: Face, _ turn: Turn) {
-        self.face = face
+    init(_ slice: Slice, _ turn: Turn) {
+        self.slice = slice
         self.turn = turn
     }
     
     init?(_ string: String) {
-        guard let faceChr = string.first else { return nil }
-        guard let face = Face(rawValue: String(faceChr)) else { return nil }
+        guard let sliceChr = string.first else { return nil }
+        guard let slice = Slice(rawValue: String(sliceChr)) else { return nil }
         guard let turn = Turn(rawValue: String(string.dropFirst())) else { return nil }
         
-        self.face = face
+        self.slice = slice
         self.turn = turn
     }
 
     var string: String {
-        return face.rawValue.appending(turn.rawValue)
+        return slice.rawValue.appending(turn.rawValue)
     }
 
     var inverse: Move {
-        return Move(face, turn.inverse)
+        return Move(slice, turn.inverse)
     }
     
     var input: [MoveInput] {
-        return turn.input.map { MoveInput(face, $0) }
+        return turn.input.map { MoveInput(slice, $0) }
     }
 }
 
-enum Face: String {
+enum Slice: String {
     case U = "U", D = "D", F = "F", B = "B", R = "R", L = "L"
     case u = "u", d = "d", f = "f", b = "b", r = "r", l = "l"
     
@@ -92,7 +92,7 @@ enum Face: String {
         }
     }
     
-    var opp: Face {
+    var opp: Slice {
         switch self {
         case .U: return .D
         case .D: return .U
