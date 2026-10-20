@@ -35,16 +35,14 @@ struct ContentView: View {
         .background(.black)
         .onAppear() {
             focus = true
-            Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { _ in
-                print("hi")
-                Cube.main.update.toggle()
-            })
         }
         .onChange(of: input, {
             if input.isEmpty { return }
             let new = input.removeLast()
             if algInput.moves[progress].inputChr.contains(new) {
                 progress += 1
+                Cube.main.exec(Move(.U, .c1))
+                Cube.main.update.toggle()
                 if progress == algInput.moves.count {
                     Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
                         progress = 0

@@ -33,7 +33,7 @@ struct Alg {
     }
 }
 
-struct Move {
+struct Move: Hashable {
     let slice: Slice
     let turn: Turn
     
@@ -50,6 +50,10 @@ struct Move {
         self.slice = slice
         self.turn = turn
     }
+    
+    var simplify: Move {
+        Move(slice, turn.simplify)
+    }
 
     var string: String {
         return slice.rawValue.appending(turn.rawValue)
@@ -61,6 +65,11 @@ struct Move {
     
     var input: [MoveInput] {
         return turn.input.map { MoveInput(slice, $0) }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(slice)
+        hasher.combine(turn)
     }
 }
 
@@ -150,3 +159,7 @@ enum Turn: String {
         }
     }
 }
+
+let moveShifts: [Move: [Cubie: Piece]] = [
+    Move(.U, .c1): [.UFR: .UBR, .UF: .UR, .UFL: .UFR, .UR: .UB, .UL: .UF, .UBR: .UBL, .UB: .UL, .UBL: .UFL]
+]

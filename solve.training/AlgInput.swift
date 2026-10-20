@@ -32,19 +32,19 @@ struct AlgInput {
 }
 
 struct MoveInput {
-    let face: Face
+    let slice: Slice
     let turn: TurnInput
     
-    init(_ face: Face, _ turn: TurnInput) {
-        self.face = face
+    init(_ slice: Slice, _ turn: TurnInput) {
+        self.slice = slice
         self.turn = turn
     }
     
     var string: String {
         if turn == .c1 {
-            return face.rawValue + " "
+            return slice.rawValue + " "
         } else if turn == .p1 {
-            return face.rawValue + "' "
+            return slice.rawValue + "' "
         } else if turn == .c2i2 {
             return "2 "
         } else if turn == .p2i2 {
@@ -56,12 +56,12 @@ struct MoveInput {
         } else if turn == .p3i3 {
             return "3' "
         } else {
-            return face.rawValue
+            return slice.rawValue
         }
     }
     
     var inputChr: String {
-        switch face {
+        switch slice {
         case .U: return turn.c ? "j" : "f"
         case .D: return turn.c ? "so" : "lw"
         case .R: return turn.c ? "i" : "k"
