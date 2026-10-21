@@ -14,12 +14,13 @@ struct ContentView: View {
     @State var input: String = ""
     @FocusState var focus: Bool
     @State var progress: Int = 0
+    @State var cubeView = CubeView()
     
     var body: some View {
         VStack {
             Spacer()
             Text("usp")
-            CubeView()
+            cubeView
             Text(algInput.stringStart(completed: progress))
                 .foregroundStyle(.green)
                 + Text(algInput.stringEnd(completed: progress))
@@ -42,6 +43,7 @@ struct ContentView: View {
 //            if algInput.moves[progress].inputChr.contains(new) {
 //                progress += 1
                 guard let move = MoveInput.inputDict[new] else { return } // exec this
+            print("moving", new, move)
                 Cube.main.exec(move)
                 Cube.main.update.toggle()
 //                if progress == algInput.moves.count {

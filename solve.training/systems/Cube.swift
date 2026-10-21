@@ -12,53 +12,65 @@ class Cube: ObservableObject {
     static var main: Cube = Cube()
     
     @Published var update: Bool = true
-    var pieces: [Cubie: Piece]
-    
-    init() {
-        pieces = [:]
-        
-        for x in -1...1 {
-            for y in -1...1 {
-                for z in -1...1 {
-                    if x == 0 && y == 0 && z == 0 { continue }
-                    let position = Cubie(x, y, z)
-                    pieces[position] = Piece(position)
-                }
-            }
-        }
-    }
-    
-    func color(of facelet: Facelet) -> NSColor {
-        face(of: facelet).color
-    }
+    var pieces: [Piece] = Cube.solvedCube
+    static let solvedCube: [Piece] = (0..<27).map { Piece($0) }
     
     func face(of facelet: Facelet) -> Face {
-        guard let piece = pieces[facelet.cubie] else { return .D }
-        return piece.cubie.faces[(piece.orientation + facelet.faceIndex) % piece.cubie.faces.count]
+        pieces[facelet.position.rawValue].face(of: facelet)
     }
     
     func exec(_ move: Move) {
-        guard let shift = moveShifts[move.simplify] else { return }
+        guard let shifts = moveShifts[move.simplify] else { return }
         var newPieces = pieces
+        print("old", newPieces[Position.UF.rawValue])
         
-        for (position, piece) in shift {
-            newPieces[position] = pieces[piece.cubie]! + piece.orientation
+        for (position, shift) in shifts {
+            newPieces[position.rawValue] = pieces[shift.oldPos.rawValue] + shift.rotation
+            if position == .UF {
+                print(position)
+                print(shift)
+                print(pieces[shift.oldPos.rawValue].orientation)
+                print((pieces[shift.oldPos.rawValue] + shift.rotation).orientation)
+                print("new", newPieces[Position.UF.rawValue])
+                print()
+            }
         }
         
         pieces = newPieces
     }
 }
 
-struct Cubie: Hashable {
+class Cubie {
+    let position: Position
+    
     let x: Int
     let y: Int
     let z: Int
+    
+    let m: Bool
+    let e: Bool
+    let s: Bool
+    
+    let corner: Bool
+    let edge: Bool
+    let center: Bool
+    
     let faces: [Face]
     
-    init(_ x: Int, _ y: Int, _ z: Int) {
-        self.x = x
-        self.y = y
-        self.z = z
+    let facelets: [Facelet]
+    
+    private init(_ position: Position) {
+        self.position = position
+        
+        let n = position.rawValue
+        
+        x = 1 - (n % 3)
+        y = 1 - (n/9)
+        z = 1 - ((n/3) % 3)
+        
+        m = x == 0
+        e = y == 0
+        s = z == 0
         
         var faceList: [Face] = []
         
@@ -71,154 +83,176 @@ struct Cubie: Hashable {
         if x == 1 { faceList.append(.R) }
         else if x == -1 { faceList.append(.L) }
         
-        if faceList.count == 3 && (x + y + z)&2 == 2 {
+        if faceList.count == 3 && (x + y + z)&2 != 2 {
             faceList.insert(faceList.removeLast(), at: 1)
         }
         
         faces = faceList
+        
+        corner = faces.count == 3
+        edge = faces.count == 2
+        center = faces.count == 1
+        
+        facelets = (0..<faces.count).map { Facelet(position, facing: $0) }
     }
     
-    var facelets: [Facelet] {
-        (0..<faces.count).map { Facelet(self, facing: $0) }
-    }
+    static let UFR: Cubie = Cubie(.UFR)
+    static let UF: Cubie = Cubie(.UF)
+    static let UFL: Cubie = Cubie(.UFL)
+    static let UR: Cubie = Cubie(.UR)
+    static let U: Cubie = Cubie(.U)
+    static let UL: Cubie = Cubie(.UL)
+    static let UBR: Cubie = Cubie(.UBR)
+    static let UB: Cubie = Cubie(.UB)
+    static let UBL: Cubie = Cubie(.UBL)
     
-    var corner: Bool {
-        faces.count == 3
-    }
+    static let FR: Cubie = Cubie(.FR)
+    static let F: Cubie = Cubie(.F)
+    static let FL: Cubie = Cubie(.FL)
+    static let R: Cubie = Cubie(.R)
+    static let C: Cubie = Cubie(.C)
+    static let L: Cubie = Cubie(.L)
+    static let BR: Cubie = Cubie(.BR)
+    static let B: Cubie = Cubie(.B)
+    static let BL: Cubie = Cubie(.BL)
     
-    var edge: Bool {
-        faces.count == 2
-    }
+    static let DFR: Cubie = Cubie(.DFR)
+    static let DF: Cubie = Cubie(.DF)
+    static let DFL: Cubie = Cubie(.DFL)
+    static let DR: Cubie = Cubie(.DR)
+    static let D: Cubie = Cubie(.D)
+    static let DL: Cubie = Cubie(.DL)
+    static let DBR: Cubie = Cubie(.DBR)
+    static let DB: Cubie = Cubie(.DB)
+    static let DBL: Cubie = Cubie(.DBL)
     
-    var center: Bool {
-        faces.count == 1
-    }
-    
-    static func == (lhs: Cubie, rhs: Cubie) -> Bool {
-        lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(x)
-        hasher.combine(y)
-        hasher.combine(z)
-    }
-    
-    static let UFR: Cubie = Cubie(1, 1, 1)
-    static let UF: Cubie = Cubie(0, 1, 1)
-    static let UFL: Cubie = Cubie(-1, 1, 1)
-    static let UR: Cubie = Cubie(1, 1, 0)
-    static let U: Cubie = Cubie(0, 1, 0)
-    static let UL: Cubie = Cubie(-1, 1, 0)
-    static let UBR: Cubie = Cubie(1, 1, -1)
-    static let UB: Cubie = Cubie(0, 1, -1)
-    static let UBL: Cubie = Cubie(-1, 1, -1)
-    
-    static let FR: Cubie = Cubie(1, 0, 1)
-    static let F: Cubie = Cubie(0, 0, 1)
-    static let FL: Cubie = Cubie(-1, 0, 1)
-    static let R: Cubie = Cubie(1, 0, 0)
-    static let L: Cubie = Cubie(-1, 0, 0)
-    static let BR: Cubie = Cubie(1, 0, -1)
-    static let B: Cubie = Cubie(0, 0, -1)
-    static let BL: Cubie = Cubie(-1, 0, -1)
-    
-    static let DFR: Cubie = Cubie(1, -1, 1)
-    static let DF: Cubie = Cubie(0, -1, 1)
-    static let DFL: Cubie = Cubie(-1, -1, 1)
-    static let DR: Cubie = Cubie(1, -1, 0)
-    static let D: Cubie = Cubie(0, -1, 0)
-    static let DL: Cubie = Cubie(-1, -1, 0)
-    static let DBR: Cubie = Cubie(1, -1, -1)
-    static let DB: Cubie = Cubie(0, -1, -1)
-    static let DBL: Cubie = Cubie(-1, -1, -1)
+    static let allCubies: [Cubie] = [
+        .UFR, .UF, .UFL, .UR, .U, .UL, .UBR, .UB, .UBL,
+        .FR, .F, .FL, .R, .C, .L, .BR, .B, .BL,
+        .DFR, .DF, .DFL, .DR, .D, .DL, .DBR, .DB, .DBL
+    ]
 }
 
-enum Face: Comparable {
+enum Position: Int {
+    case UFR = 0, UF = 1, UFL = 2, UR = 3, U = 4, UL = 5, UBR = 6, UB = 7, UBL = 8
+    case FR = 9, F = 10, FL = 11, R = 12, C = 13, L = 14, BR = 15, B = 16, BL = 17
+    case DFR = 18, DF = 19, DFL = 20, DR = 21, D = 22, DL = 23, DBR = 24, DB = 25, DBL = 26
+}
+
+enum Face {
     case U, D, F, B, R, L
-    
-    var color: NSColor {
-        switch self {
-        case .U: return .yellow
-        case .D: return .white
-        case .F: return .blue
-        case .B: return .green
-        case .R: return .red
-        case .L: return .orange
-        }
-    }
 }
 
 struct Facelet {
-    let cubie: Cubie
+    let position: Position
     let faceIndex: Int
-    let face: Face
     
-    init(_ cubie: Cubie, facing faceIndex: Int) {
-        self.cubie = cubie
+    init(_ position: Position, facing faceIndex: Int) {
+        self.position = position
         self.faceIndex = faceIndex
-        self.face = cubie.faces[faceIndex]
     }
 }
 
 struct Piece {
-    let cubie: Cubie
+    let position: Position
     var orientation: Int {
         get {
             return _orientation
         }
     }
     
-    @State private var _orientation: Int
+    private var _orientation: Int
     
-    init(_ cubie: Cubie) {
-        self.cubie = cubie
+    init(_ position: Position) {
+        self.position = position
         _orientation = 0
     }
     
-    static func +(lhs: inout Piece, rhs: Int) -> Piece {
-        lhs._orientation = (lhs._orientation + rhs) % lhs.cubie.faces.count
-        return lhs
+    init(_ position: Int) {
+        self.position = Position(rawValue: position)!
+        _orientation = 0
     }
     
-    func c() {
+    init(_ position: Position, o: Int) {
+        self.position = position
+        _orientation = o
+    }
+    
+    static func +(lhs: Piece, rhs: Int) -> Piece {
+        return Piece(lhs.position, o: (lhs._orientation + rhs) % Cubie.allCubies[lhs.position.rawValue].faces.count)
+    }
+    
+    mutating func c() {
         _orientation = (_orientation + 1) % 3
     }
     
-    func p() {
+    mutating func p() {
         _orientation = (_orientation + 2) % 3
     }
     
-    func f() {
+    mutating func f() {
         _orientation ^= 1
     }
     
+    func face(of facelet: Facelet) -> Face {
+        let cubie = Cubie.allCubies[position.rawValue]
+        return cubie.faces[(orientation + facelet.faceIndex) % cubie.faces.count]
+    }
+    
     static let UFR: Piece = Piece(.UFR)
+    static let UFR_c: Piece = Piece(.UFR, o: 1)
+    static let UFR_p: Piece = Piece(.UFR, o: 2)
     static let UF: Piece = Piece(.UF)
+    static let UF_f: Piece = Piece(.UF, o: 1)
     static let UFL: Piece = Piece(.UFL)
+    static let UFL_c: Piece = Piece(.UFL, o: 1)
+    static let UFL_p: Piece = Piece(.UFL, o: 2)
     static let UR: Piece = Piece(.UR)
+    static let UR_f: Piece = Piece(.UR, o: 1)
     static let U: Piece = Piece(.U)
     static let UL: Piece = Piece(.UL)
+    static let UL_f: Piece = Piece(.UL, o: 1)
     static let UBR: Piece = Piece(.UBR)
+    static let UBR_c: Piece = Piece(.UBR, o: 1)
+    static let UBR_p: Piece = Piece(.UBR, o: 2)
     static let UB: Piece = Piece(.UB)
+    static let UB_f: Piece = Piece(.UB, o: 1)
     static let UBL: Piece = Piece(.UBL)
+    static let UBL_c: Piece = Piece(.UBL, o: 1)
+    static let UBL_p: Piece = Piece(.UBL, o: 2)
     
     static let FR: Piece = Piece(.FR)
+    static let FR_f: Piece = Piece(.FR, o: 1)
     static let F: Piece = Piece(.F)
     static let FL: Piece = Piece(.FL)
+    static let FL_f: Piece = Piece(.FL, o: 1)
     static let R: Piece = Piece(.R)
     static let L: Piece = Piece(.L)
     static let BR: Piece = Piece(.BR)
+    static let BR_f: Piece = Piece(.BR, o: 1)
     static let B: Piece = Piece(.B)
     static let BL: Piece = Piece(.BL)
+    static let BL_f: Piece = Piece(.BL, o: 1)
     
     static let DFR: Piece = Piece(.DFR)
+    static let DFR_c: Piece = Piece(.DFR, o: 1)
+    static let DFR_p: Piece = Piece(.DFR, o: 2)
     static let DF: Piece = Piece(.DF)
+    static let DF_f: Piece = Piece(.DF, o: 1)
     static let DFL: Piece = Piece(.DFL)
+    static let DFL_c: Piece = Piece(.DFL, o: 1)
+    static let DFL_p: Piece = Piece(.DFL, o: 2)
     static let DR: Piece = Piece(.DR)
+    static let DR_f: Piece = Piece(.DR, o: 1)
     static let D: Piece = Piece(.D)
     static let DL: Piece = Piece(.DL)
+    static let DL_f: Piece = Piece(.DL, o: 1)
     static let DBR: Piece = Piece(.DBR)
+    static let DBR_c: Piece = Piece(.DBR, o: 1)
+    static let DBR_p: Piece = Piece(.DBR, o: 2)
     static let DB: Piece = Piece(.DB)
+    static let DB_f: Piece = Piece(.DB, o: 1)
     static let DBL: Piece = Piece(.DBL)
+    static let DBL_c: Piece = Piece(.DBL, o: 1)
+    static let DBL_p: Piece = Piece(.DBL, o: 2)
 }

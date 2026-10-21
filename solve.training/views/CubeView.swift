@@ -11,7 +11,7 @@ import RealityKit
 struct CubeView: View {
     @ObservedObject var cube = Cube.main
     
-    @State var base: CubieView
+    @State var center: CubieView
     
     var body: some View {
         RealityView { content in
@@ -19,9 +19,15 @@ struct CubeView: View {
             
             // have transparency toggle when hitting space
             
-            content.add(base.entity)
+            content.add(center.entity)
         } update: { content in
+            print("updating", FaceletView.facelets.count)
             for facelet in FaceletView.facelets {
+//                if facelet.facelet.position == .UF && facelet.facelet.faceIndex == 0 {
+//                    print(cube.face(of: facelet.facelet))
+//                    print(cube.pieces[facelet.facelet.position.rawValue])
+//                    print()
+//                }
                 facelet.update()
             }
         }
@@ -29,93 +35,16 @@ struct CubeView: View {
     }
     
     init() {
-        base = CubieView(Cubie(0, 0, 0))
+        center = CubieView(.C)
         
-        base.entity.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: -25).radians), roll: Float(Angle(degrees: -10).radians))
-        base.entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
+        center.entity.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: -25).radians), roll: Float(Angle(degrees: -10).radians))
+        center.entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
         
-        for cubie in cube.pieces.keys {
-            base.entity.addChild(CubieView(cubie).entity)
+        for position in 0..<27 {
+            if position == 13 { continue }
+            center.entity.addChild(CubieView(Cubie.allCubies[position]).entity)
         }
     }
-    
-//    func generateBase() -> some Entity {
-//        let mesh = MeshResource.generateBox(size: 1, cornerRadius: 0.04)
-//        let base = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .clear, roughness: 1.0, isMetallic: true)])
-//        
-//        base.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: -25).radians), roll: Float(Angle(degrees: -10).radians))
-////        base.transform.rotation = simd_quatf(angle: Float(Angle(degrees: 45).radians), axis: [0,1,0])
-////        base.transform.rotation *= simd_quatf(angle: Float(Angle(degrees: 25).radians), axis: normalize(SIMD3<Float>(1.0, 0.0, 1.0)))
-//        
-//        base.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
-//        
-//        return base
-//    }
-    
-//    func generateCubie(_ x: Int, _ y: Int, _ z: Int) -> some Entity {
-//        let mesh = MeshResource.generateBox(size: 1, cornerRadius: 0.1)
-//        let cubie = ModelEntity(mesh: mesh, materials: [SimpleMaterial(color: .black, roughness: 1.0, isMetallic: true)])
-//        
-//        // add relevant facelets
-//        if x ==  1 { cubie.addChild(generateFacelet(.R)) }
-//        else if x == -1 { cubie.addChild(generateFacelet(.L)) }
-//        
-//        if y ==  1  { cubie.addChild(generateFacelet(.U)) }
-//        else if y == -1 { cubie.addChild(generateFacelet(.D)) }
-//        
-//        if z ==  1 { cubie.addChild(generateFacelet(.F)) }
-//        else if z == -1 { cubie.addChild(generateFacelet(.B)) }
-//        
-//        // place cubie relative to base
-//        cubie.transform = Transform(translation: SIMD3<Float>(Float(x), Float(y), Float(z)))
-//        
-//        return cubie
-//    }
-//    
-//    func generateFacelet(_ face: Face) -> some Entity {
-//        let mesh: MeshResource = .generatePlane(width: 0.8, height: 0.8, cornerRadius: 0.15)
-//        let materials: [SimpleMaterial] = [SimpleMaterial(color: cube.update ? faceColor(face) : .brown, roughness: 1.0, isMetallic: true)] // for transparent mode: .withAlphaComponent(0.85)
-//        
-//        let facelet = ModelEntity(mesh: mesh, materials: materials)
-//        
-//        let faceletBack = ModelEntity(mesh: mesh, materials: materials)
-//        faceletBack.transform.rotation = simd_quatf(angle: .pi, axis: [0,1,0])
-//        
-//        facelet.addChild(faceletBack)
-//        
-//        
-//        switch face {
-//        case .U:
-//            facelet.transform.translation = SIMD3<Float>(x: 0, y: 0.501, z: 0)
-//            facelet.transform.rotation = simd_quatf(angle: -.pi/2, axis: [1,0,0])
-//        case .D:
-//            facelet.transform.translation = SIMD3<Float>(x: 0, y: -0.501, z: 0)
-//            facelet.transform.rotation = simd_quatf(angle: .pi/2, axis: [1,0,0])
-//        case .F:
-//            facelet.transform.translation = SIMD3<Float>(x: 0, y: 0, z: 0.501)
-//        case .B:
-//            facelet.transform.translation = SIMD3<Float>(x: 0, y: 0, z: -0.501)
-//        case .R:
-//            facelet.transform.translation = SIMD3<Float>(x: 0.501, y: 0, z: 0)
-//            facelet.transform.rotation = simd_quatf(angle: .pi/2, axis: [0,1,0])
-//        default:
-//            facelet.transform.translation = SIMD3<Float>(x: -0.501, y: 0, z: 0)
-//            facelet.transform.rotation = simd_quatf(angle: -.pi/2, axis: [0,1,0])
-//        }
-//
-//        return facelet
-//    }
-    
-//    func faceColor(_ face: Face) -> NSColor {
-//        switch face {
-//        case .U: return .yellow
-//        case .D: return .white
-//        case .F: return .blue
-//        case .B: return .green
-//        case .R: return .red
-//        default: return .orange
-//        }
-//    }
 }
 
 class CubieView {
@@ -152,28 +81,29 @@ class CubieView {
 
 class FaceletView {
     static var facelets: [FaceletView] = []
-    
     var entity: ModelEntity
     var back: ModelEntity?
     var material: SimpleMaterial
-    var facelet: Facelet
+    let facelet: Facelet
+    let face: Face
     
     static let mesh = MeshResource.generatePlane(width: 0.8, height: 0.8, cornerRadius: 0.15)
     
     init(_ facelet: Facelet) {
         self.facelet = facelet
+        face = Cubie.allCubies[facelet.position.rawValue].faces[facelet.faceIndex]
         
-        material = SimpleMaterial(color: Cube.main.color(of: facelet), roughness: 1.0, isMetallic: true)
+        material = SimpleMaterial(color: Self.color(of: facelet), roughness: 1.0, isMetallic: true)
         entity = ModelEntity(mesh: Self.mesh, materials: [material])
         
-        if facelet.face == .L || facelet.face == .R {
+        if face == .L || face == .R {
             let back = ModelEntity(mesh: Self.mesh, materials: [material])
             back.transform.rotation = simd_quatf(angle: .pi, axis: [0,1,0])
             self.back = back
             entity.addChild(back)
         }
         
-        switch facelet.face {
+        switch face {
         case .U:
             entity.transform.translation = SIMD3<Float>(x: 0, y: 0.501, z: 0)
             entity.transform.rotation = simd_quatf(angle: -.pi/2, axis: [1,0,0])
@@ -196,9 +126,22 @@ class FaceletView {
     }
     
     func update() {
-        material = SimpleMaterial(color: Cube.main.color(of: facelet), roughness: 1.0, isMetallic: true)
+        material = SimpleMaterial(color: Self.color(of: facelet), roughness: 1.0, isMetallic: true)
         entity.model?.materials = [material]
         back?.model?.materials = [material]
+    }
+    
+    static func color(of facelet: Facelet) -> NSColor {
+        let face = Cube.main.face(of: facelet)
+        
+        switch face {
+        case .U: return .yellow
+        case .D: return .white
+        case .F: return .blue
+        case .B: return .green
+        case .R: return .red
+        case .L: return .orange
+        }
     }
 }
 

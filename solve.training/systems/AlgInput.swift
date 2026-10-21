@@ -98,8 +98,8 @@ struct MoveInput {
         "h": Move(.F, .c1),
         "g": Move(.F, .p1),
         
-        "b": Move(.B, .c1),
-        "n": Move(.B, .p1),
+        "t": Move(.B, .c1),
+        "y": Move(.B, .p1),
         
         "i": Move(.R, .c1),
         "k": Move(.R, .p1),
@@ -120,8 +120,8 @@ struct MoveInput {
         "H": Move(.f, .c1),
         "G": Move(.f, .p1),
         
-        "B": Move(.b, .c1),
-        "N": Move(.b, .p1),
+        "T": Move(.b, .c1),
+        "Y": Move(.b, .p1),
         
         "I": Move(.r, .c1),
         "K": Move(.r, .p1),
@@ -136,8 +136,8 @@ struct MoveInput {
         "x": Move(.M, .p1),
         "'": Move(.M, .p1),
         
-        "y": Move(.S, .c1),
-        "t": Move(.S, .p1),
+        "n": Move(.S, .c1),
+        "b": Move(.S, .p1),
         
         "c": Move(.E, .c1),
         ",": Move(.E, .p1),

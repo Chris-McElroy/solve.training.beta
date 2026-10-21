@@ -160,7 +160,74 @@ enum Turn: String {
     }
 }
 
-let moveShifts: [Move: [Cubie: Piece]] = [
+struct Shift {
+    let oldPos: Position
+    let rotation: Int
+    
+    init(oldPos: Position, rotation: Int = 0) {
+        self.oldPos = oldPos
+        self.rotation = rotation
+    }
+    
+    static let UFR: Shift = Shift(oldPos: .UFR)
+    static let UFR_c: Shift = Shift(oldPos: .UFR, rotation: 1)
+    static let UFR_p: Shift = Shift(oldPos: .UFR, rotation: 2)
+    static let UF: Shift = Shift(oldPos: .UF)
+    static let UF_f: Shift = Shift(oldPos: .UF, rotation: 1)
+    static let UFL: Shift = Shift(oldPos: .UFL)
+    static let UFL_c: Shift = Shift(oldPos: .UFL, rotation: 1)
+    static let UFL_p: Shift = Shift(oldPos: .UFL, rotation: 2)
+    static let UR: Shift = Shift(oldPos: .UR)
+    static let UR_f: Shift = Shift(oldPos: .UR, rotation: 1)
+    static let U: Shift = Shift(oldPos: .U)
+    static let UL: Shift = Shift(oldPos: .UL)
+    static let UL_f: Shift = Shift(oldPos: .UL, rotation: 1)
+    static let UBR: Shift = Shift(oldPos: .UBR)
+    static let UBR_c: Shift = Shift(oldPos: .UBR, rotation: 1)
+    static let UBR_p: Shift = Shift(oldPos: .UBR, rotation: 2)
+    static let UB: Shift = Shift(oldPos: .UB)
+    static let UB_f: Shift = Shift(oldPos: .UB, rotation: 1)
+    static let UBL: Shift = Shift(oldPos: .UBL)
+    static let UBL_c: Shift = Shift(oldPos: .UBL, rotation: 1)
+    static let UBL_p: Shift = Shift(oldPos: .UBL, rotation: 2)
+    
+    static let FR: Shift = Shift(oldPos: .FR)
+    static let FR_f: Shift = Shift(oldPos: .FR, rotation: 1)
+    static let F: Shift = Shift(oldPos: .F)
+    static let FL: Shift = Shift(oldPos: .FL)
+    static let FL_f: Shift = Shift(oldPos: .FL, rotation: 1)
+    static let R: Shift = Shift(oldPos: .R)
+    static let L: Shift = Shift(oldPos: .L)
+    static let BR: Shift = Shift(oldPos: .BR)
+    static let BR_f: Shift = Shift(oldPos: .BR, rotation: 1)
+    static let B: Shift = Shift(oldPos: .B)
+    static let BL: Shift = Shift(oldPos: .BL)
+    static let BL_f: Shift = Shift(oldPos: .BL, rotation: 1)
+    
+    static let DFR: Shift = Shift(oldPos: .DFR)
+    static let DFR_c: Shift = Shift(oldPos: .DFR, rotation: 1)
+    static let DFR_p: Shift = Shift(oldPos: .DFR, rotation: 2)
+    static let DF: Shift = Shift(oldPos: .DF)
+    static let DF_f: Shift = Shift(oldPos: .DF, rotation: 1)
+    static let DFL: Shift = Shift(oldPos: .DFL)
+    static let DFL_c: Shift = Shift(oldPos: .DFL, rotation: 1)
+    static let DFL_p: Shift = Shift(oldPos: .DFL, rotation: 2)
+    static let DR: Shift = Shift(oldPos: .DR)
+    static let DR_f: Shift = Shift(oldPos: .DR, rotation: 1)
+    static let D: Shift = Shift(oldPos: .D)
+    static let DL: Shift = Shift(oldPos: .DL)
+    static let DL_f: Shift = Shift(oldPos: .DL, rotation: 1)
+    static let DBR: Shift = Shift(oldPos: .DBR)
+    static let DBR_c: Shift = Shift(oldPos: .DBR, rotation: 1)
+    static let DBR_p: Shift = Shift(oldPos: .DBR, rotation: 2)
+    static let DB: Shift = Shift(oldPos: .DB)
+    static let DB_f: Shift = Shift(oldPos: .DB, rotation: 1)
+    static let DBL: Shift = Shift(oldPos: .DBL)
+    static let DBL_c: Shift = Shift(oldPos: .DBL, rotation: 1)
+    static let DBL_p: Shift = Shift(oldPos: .DBL, rotation: 2)
+}
+
+let moveShifts: [Move: [Position: Shift]] = [
     Move(.U, .c1): [
         .UFR: .UBR, .UBR: .UBL, .UBL: .UFL, .UFL: .UFR,
         .UF: .UR, .UR: .UB, .UB: .UL, .UL: .UF,
@@ -192,8 +259,8 @@ let moveShifts: [Move: [Cubie: Piece]] = [
     ],
     
     Move(.F, .c1): [
-        .UFR: .UFL, .UFL: .DFL, .DFL: .DFR, .DFR: .UFR,
-        .UF: .FL, .FL: .DF, .DF: .FR, .FR: .UF,
+        .UFR: .UFL_c, .UFL: .DFL_p, .DFL: .DFR_c, .DFR: .UFR_p,
+        .UF: .FL_f, .FL: .DF_f, .DF: .FR_f, .FR: .UF_f,
     ],
     Move(.F, .c2): [
         .UFR: .DFL, .DFL: .UFR,
@@ -202,13 +269,13 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .FR: .FL, .FL: .FR,
     ],
     Move(.F, .p1): [
-        .UFR: .DFR, .DFR: .DFL, .DFL: .UFL, .UFL: .UFR,
-        .UF: .FR, .FR: .DF, .DF: .FL, .FL: .UF,
+        .UFR: .DFR_c, .DFR: .DFL_p, .DFL: .UFL_c, .UFL: .UFR_p,
+        .UF: .FR_f, .FR: .DF_f, .DF: .FL_f, .FL: .UF_f,
     ],
     
     Move(.B, .c1): [
-        .UBR: .DBR, .DBR: .DBL, .DBL: .UBL, .UBL: .UBR,
-        .UB: .BR, .BR: .DB, .DB: .BL, .BL: .UB,
+        .UBR: .DBR_p, .DBR: .DBL_c, .DBL: .UBL_p, .UBL: .UBR_c,
+        .UB: .BR_f, .BR: .DB_f, .DB: .BL_f, .BL: .UB_f,
     ],
     Move(.B, .c2): [
         .UBR: .DBL, .DBL: .UBR,
@@ -217,12 +284,12 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .BR: .BL, .BL: .BR,
     ],
     Move(.B, .p1): [
-        .UBR: .UBL, .UBL: .DBL, .DBL: .DBR, .DBR: .UBR,
-        .UB: .BL, .BL: .DB, .DB: .BR, .BR: .UB,
+        .UBR: .UBL_p, .UBL: .DBL_c, .DBL: .DBR_p, .DBR: .UBR_c,
+        .UB: .BL_f, .BL: .DB_f, .DB: .BR_f, .BR: .UB_f,
     ],
     
     Move(.R, .c1): [
-        .UFR: .DFR, .DFR: .DBR, .DBR: .UBR, .UBR: .UFR,
+        .UFR: .DFR_p, .DFR: .DBR_c, .DBR: .UBR_p, .UBR: .UFR_c,
         .UR: .FR, .FR: .DR, .DR: .BR, .BR: .UR,
     ],
     Move(.R, .c2): [
@@ -232,12 +299,12 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .FR: .BR, .BR: .FR,
     ],
     Move(.R, .p1): [
-        .UFR: .UBR, .UBR: .DBR, .DBR: .DFR, .DFR: .UFR,
+        .UFR: .UBR_p, .UBR: .DBR_c, .DBR: .DFR_p, .DFR: .UFR_c,
         .UR: .BR, .BR: .DR, .DR: .FR, .FR: .UR,
     ],
     
     Move(.L, .c1): [
-        .UFL: .UBL, .UBL: .DBL, .DBL: .DFL, .DFL: .UFL,
+        .UFL: .UBL_c, .UBL: .DBL_p, .DBL: .DFL_c, .DFL: .UFL_p,
         .UL: .BL, .BL: .DL, .DL: .FL, .FL: .UL,
     ],
     Move(.L, .c2): [
@@ -247,7 +314,7 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .FL: .BL, .BL: .FL,
     ],
     Move(.L, .p1): [
-        .UFL: .DFL, .DFL: .DBL, .DBL: .UBL, .UBL: .UFL,
+        .UFL: .DFL_c, .DFL: .DBL_p, .DBL: .UBL_c, .UBL: .UFL_p,
         .UL: .FL, .FL: .DL, .DL: .BL, .BL: .UL,
     ],
     
@@ -256,7 +323,7 @@ let moveShifts: [Move: [Cubie: Piece]] = [
     Move(.u, .c1): [
         .UFR: .UBR, .UBR: .UBL, .UBL: .UFL, .UFL: .UFR,
         .UF: .UR, .UR: .UB, .UB: .UL, .UL: .UF,
-        .FR: .BR, .BR: .BL, .BL: .FL, .FL: .FR,
+        .FR: .BR_f, .BR: .BL_f, .BL: .FL_f, .FL: .FR_f,
         .F: .R, .R: .B, .B: .L, .L: .F,
     ],
     Move(.u, .c2): [
@@ -272,15 +339,14 @@ let moveShifts: [Move: [Cubie: Piece]] = [
     Move(.u, .p1): [
         .UFR: .UFL, .UFL: .UBL, .UBL: .UBR, .UBR: .UFR,
         .UF: .UL, .UL: .UB, .UB: .UR, .UR: .UF,
-        .FR: .FL, .FL: .BL, .BL: .BR, .BR: .FR,
+        .FR: .FL_f, .FL: .BL_f, .BL: .BR_f, .BR: .FR_f,
         .F: .L, .L: .B, .B: .R, .R: .F,
     ],
     
     //
     
-    
     Move(.M, .c1): [
-        .UF: .UB, .UB: .DB, .DB: .DF, .DF: .UF,
+        .UF: .UB_f, .UB: .DB_f, .DB: .DF_f, .DF: .UF_f,
         .U: .B, .B: .D, .D: .F, .F: .U,
     ],
     Move(.M, .c2): [
@@ -290,12 +356,12 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .F: .B, .B: .F,
     ],
     Move(.M, .p1): [
-        .UF: .DF, .DF: .DB, .DB: .UB, .UB: .UF,
+        .UF: .DF_f, .DF: .DB_f, .DB: .UB_f, .UB: .UF_f,
         .U: .F, .F: .D, .D: .B, .B: .U,
     ],
     
     Move(.S, .c1): [
-        .UR: .UL, .UL: .DL, .DL: .DR, .DR: .UR,
+        .UR: .UL_f, .UL: .DL_f, .DL: .DR_f, .DR: .UR_f,
         .U: .L, .L: .D, .D: .R, .R: .U,
     ],
     Move(.S, .c2): [
@@ -305,12 +371,12 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .R: .L, .L: .R,
     ],
     Move(.S, .p1): [
-        .UR: .DR, .DR: .DL, .DL: .UL, .UL: .UR,
+        .UR: .DR_f, .DR: .DL_f, .DL: .UL_f, .UL: .UR_f,
         .U: .R, .R: .D, .D: .L, .L: .U,
     ],
     
     Move(.E, .c1): [
-        .FR: .FL, .FL: .BL, .BL: .BR, .BR: .FR,
+        .FR: .FL_f, .FL: .BL_f, .BL: .BR_f, .BR: .FR_f,
         .F: .L, .L: .B, .B: .R, .R: .F,
     ],
     Move(.E, .c2): [
@@ -320,7 +386,7 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .R: .L, .L: .R,
     ],
     Move(.E, .p1): [
-        .FR: .BR, .BR: .BL, .BL: .FL, .FL: .FR,
+        .FR: .BR_f, .BR: .BL_f, .BL: .FL_f, .FL: .FR_f,
         .F: .R, .R: .B, .B: .L, .L: .F,
     ],
 ]
