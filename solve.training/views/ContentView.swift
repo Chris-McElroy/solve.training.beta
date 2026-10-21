@@ -39,16 +39,17 @@ struct ContentView: View {
         .onChange(of: input, {
             if input.isEmpty { return }
             let new = input.removeLast()
-            if algInput.moves[progress].inputChr.contains(new) {
-                progress += 1
-                Cube.main.exec(Move(.U, .c1))
+//            if algInput.moves[progress].inputChr.contains(new) {
+//                progress += 1
+                guard let move = MoveInput.inputDict[new] else { return } // exec this
+                Cube.main.exec(move)
                 Cube.main.update.toggle()
-                if progress == algInput.moves.count {
-                    Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
-                        progress = 0
-                    })
-                }
-            }
+//                if progress == algInput.moves.count {
+//                    Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
+//                        progress = 0
+//                    })
+//                }
+//            }
         })
     }
 }
