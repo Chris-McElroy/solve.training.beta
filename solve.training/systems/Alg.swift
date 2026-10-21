@@ -251,6 +251,8 @@ let moveShifts: [Move: [Cubie: Piece]] = [
         .UL: .FL, .FL: .DL, .DL: .BL, .BL: .UL,
     ],
     
+    //
+    
     Move(.u, .c1): [
         .UFR: .UBR, .UBR: .UBL, .UBL: .UFL, .UFL: .UFR,
         .UF: .UR, .UR: .UB, .UB: .UL, .UL: .UF,
@@ -270,5 +272,55 @@ let moveShifts: [Move: [Cubie: Piece]] = [
     Move(.u, .p1): [
         .UFR: .UFL, .UFL: .UBL, .UBL: .UBR, .UBR: .UFR,
         .UF: .UL, .UL: .UB, .UB: .UR, .UR: .UF,
+        .FR: .FL, .FL: .BL, .BL: .BR, .BR: .FR,
+        .F: .L, .L: .B, .B: .R, .R: .F,
+    ],
+    
+    //
+    
+    
+    Move(.M, .c1): [
+        .UF: .UB, .UB: .DB, .DB: .DF, .DF: .UF,
+        .U: .B, .B: .D, .D: .F, .F: .U,
+    ],
+    Move(.M, .c2): [
+        .UF: .DB, .DB: .UF,
+        .UB: .DF, .DF: .UB,
+        .U: .D, .D: .U,
+        .F: .B, .B: .F,
+    ],
+    Move(.M, .p1): [
+        .UF: .DF, .DF: .DB, .DB: .UB, .UB: .UF,
+        .U: .F, .F: .D, .D: .B, .B: .U,
+    ],
+    
+    Move(.S, .c1): [
+        .UR: .UL, .UL: .DL, .DL: .DR, .DR: .UR,
+        .U: .L, .L: .D, .D: .R, .R: .U,
+    ],
+    Move(.S, .c2): [
+        .UR: .DL, .DL: .UR,
+        .UL: .DR, .DR: .UL,
+        .U: .D, .D: .U,
+        .R: .L, .L: .R,
+    ],
+    Move(.S, .p1): [
+        .UR: .DR, .DR: .DL, .DL: .UL, .UL: .UR,
+        .U: .R, .R: .D, .D: .L, .L: .U,
+    ],
+    
+    Move(.E, .c1): [
+        .FR: .FL, .FL: .BL, .BL: .BR, .BR: .FR,
+        .F: .L, .L: .B, .B: .R, .R: .F,
+    ],
+    Move(.E, .c2): [
+        .FR: .BL, .BL: .FR,
+        .FL: .BR, .BR: .FL,
+        .F: .B, .B: .F,
+        .R: .L, .L: .R,
+    ],
+    Move(.E, .p1): [
+        .FR: .BR, .BR: .BL, .BL: .FL, .FL: .FR,
+        .F: .R, .R: .B, .B: .L, .L: .F,
     ],
 ]
