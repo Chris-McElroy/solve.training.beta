@@ -80,7 +80,7 @@ struct MoveInput {
         case .S: return turn.c ? "n" : "b"
         case .E: return turn.c ? "c" : ","
             
-        case .x: return turn.c ? "v" : "r"
+        case .x: return turn.c ? "r" : "v"
         case .y: return turn.c ? ";p" : "aq"
         case .z: return turn.c ? "u" : "m"
         }
@@ -144,8 +144,8 @@ struct MoveInput {
         
         
         
+        "r": Move(.x, .c1),
         "v": Move(.x, .p1),
-        "r": Move(.x, .p1),
         
         ";": Move(.y, .c1),
         "p": Move(.y, .c1),
