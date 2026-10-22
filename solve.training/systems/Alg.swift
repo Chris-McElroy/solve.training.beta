@@ -8,16 +8,29 @@
 import Foundation
 
 struct Alg {
+    let premoves: [Move]
     let moves: [Move]
     
-    init(_ moves: [Move]) {
+    init(pre premoves: [Move] = [], _ moves: [Move]) {
+        self.premoves = premoves
         self.moves = moves
     }
     
     init?(_ string: String) {
+        var premoves: [Move] = []
         var moves: [Move] = []
         let moveStrings = string.split(separator: " ")
-        for moveString in moveStrings {
+        if string.starts(with: "(") {
+            guard let prestring = string.dropFirst().split(separator: ")").first else { return nil }
+            for moveString in prestring {
+                guard let move = Move(String(moveString)) else { return nil }
+                premoves.append(move)
+            }
+            self.premoves = premoves
+        } else {
+            self.premoves = []
+        }
+        for moveString in moveStrings.dropFirst(premoves.count) {
             guard let move = Move(String(moveString)) else { return nil }
             moves.append(move)
         }

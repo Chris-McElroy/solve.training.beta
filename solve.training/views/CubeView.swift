@@ -21,13 +21,8 @@ struct CubeView: View {
             
             content.add(center.entity)
         } update: { content in
-            print("updating", FaceletView.facelets.count)
+            // laterDO this is updating too much?
             for facelet in FaceletView.facelets {
-//                if facelet.facelet.position == .UF && facelet.facelet.faceIndex == 0 {
-//                    print(cube.face(of: facelet.facelet))
-//                    print(cube.pieces[facelet.facelet.position.rawValue])
-//                    print()
-//                }
                 facelet.update()
             }
         }

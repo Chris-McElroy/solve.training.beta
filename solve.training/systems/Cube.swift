@@ -10,10 +10,12 @@ import Combine
 
 class Cube: ObservableObject {
     static var main: Cube = Cube()
+    static let solvedCube: [Piece] = (0..<27).map { Piece($0) }
     
     @Published var update: Bool = true
     var pieces: [Piece] = Cube.solvedCube
-    static let solvedCube: [Piece] = (0..<27).map { Piece($0) }
+    var transparent: Bool = false
+    var right: Bool = true
     
     func face(of facelet: Facelet) -> Face {
         pieces[facelet.position.rawValue].face(of: facelet)
@@ -22,18 +24,9 @@ class Cube: ObservableObject {
     func exec(_ move: Move) {
         guard let shifts = moveShifts[move.simplify] else { return }
         var newPieces = pieces
-        print("old", newPieces[Position.UF.rawValue])
         
         for (position, shift) in shifts {
             newPieces[position.rawValue] = pieces[shift.oldPos.rawValue] + shift.rotation
-            if position == .UF {
-                print(position)
-                print(shift)
-                print(pieces[shift.oldPos.rawValue].orientation)
-                print((pieces[shift.oldPos.rawValue] + shift.rotation).orientation)
-                print("new", newPieces[Position.UF.rawValue])
-                print()
-            }
         }
         
         pieces = newPieces

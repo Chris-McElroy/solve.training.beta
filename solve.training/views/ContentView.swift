@@ -43,7 +43,6 @@ struct ContentView: View {
 //            if algInput.moves[progress].inputChr.contains(new) {
 //                progress += 1
                 guard let move = MoveInput.inputDict[new] else { return } // exec this
-            print("moving", new, move)
                 Cube.main.exec(move)
                 Cube.main.update.toggle()
 //                if progress == algInput.moves.count {
