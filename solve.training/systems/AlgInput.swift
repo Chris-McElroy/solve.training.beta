@@ -34,10 +34,12 @@ struct AlgInput {
 struct MoveInput {
     let slice: Slice
     let turn: TurnInput
+    let move: Move
     
     init(_ slice: Slice, _ turn: TurnInput) {
         self.slice = slice
         self.turn = turn
+        self.move = Move(slice, turn.turn)
     }
     
     var string: String {
@@ -163,5 +165,9 @@ enum TurnInput {
     
     var c: Bool {
         return self == .c1 || self == .c2i1 || self == .c2i2 || self == .c3i1 || self == .c3i2 || self == .c3i3
+    }
+    
+    var turn: Turn {
+        return c ? .c1 : .p1
     }
 }

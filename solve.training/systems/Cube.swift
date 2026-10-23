@@ -14,6 +14,7 @@ class Cube: ObservableObject {
     
     @Published var update: Bool = true
     var pieces: [Piece] = Cube.solvedCube
+    var highlights: [Position] = []
     var transparent: Bool = false
     var right: Bool = true
     
@@ -119,11 +120,15 @@ class Cubie {
     static let DB: Cubie = Cubie(.DB)
     static let DBL: Cubie = Cubie(.DBL)
     
-    static let allCubies: [Cubie] = [
+    static let all: [Cubie] = [
         .UFR, .UF, .UFL, .UR, .U, .UL, .UBR, .UB, .UBL,
         .FR, .F, .FL, .R, .C, .L, .BR, .B, .BL,
         .DFR, .DF, .DFL, .DR, .D, .DL, .DBR, .DB, .DBL
     ]
+    
+    static func at(_ position: Position) -> Cubie {
+        all[position.rawValue]
+    }
 }
 
 enum Position: Int {
@@ -172,7 +177,7 @@ struct Piece {
     }
     
     static func +(lhs: Piece, rhs: Int) -> Piece {
-        return Piece(lhs.position, o: (lhs._orientation + rhs) % Cubie.allCubies[lhs.position.rawValue].faces.count)
+        return Piece(lhs.position, o: (lhs._orientation + rhs) % Cubie.at(lhs.position).faces.count)
     }
     
     mutating func c() {
@@ -188,7 +193,7 @@ struct Piece {
     }
     
     func face(of facelet: Facelet) -> Face {
-        let cubie = Cubie.allCubies[position.rawValue]
+        let cubie = Cubie.at(position)
         return cubie.faces[(orientation + facelet.faceIndex) % cubie.faces.count]
     }
     

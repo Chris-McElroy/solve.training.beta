@@ -10,8 +10,9 @@ import RealityKit
 
 struct CubeView: View {
     @ObservedObject var cube = Cube.main
-    
     @State var center: CubieView
+    @State var cubies: [CubieView] = []
+    @State var facelets: [FaceletView] = []
     
     var body: some View {
         RealityView { content in
@@ -22,8 +23,22 @@ struct CubeView: View {
             content.add(center.entity)
         } update: { content in
             // laterDO this is updating too much?
-            for facelet in FaceletView.facelets {
+            for facelet in facelets {
                 facelet.update()
+            }
+            
+            
+            let material = SimpleMaterial(color: cube.transparent ? .clear : .black, roughness: 1.0, isMetallic: true)
+                
+            for cubie in cubies {
+                cubie.update(material: material)
+            }
+            
+            if !cube.transparent {
+                let highlight = SimpleMaterial(color: .systemPink, roughness: 1.0, isMetallic: true)
+                for cubie in cube.highlights {
+                    cubies[cubie.rawValue].entity.model?.materials = [highlight]
+                }
             }
         }
         .background(.black)
@@ -36,46 +51,51 @@ struct CubeView: View {
         center.entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
         
         for position in 0..<27 {
-            if position == 13 { continue }
-            center.entity.addChild(CubieView(Cubie.allCubies[position]).entity)
+            if position == 13 {
+                cubies.append(center)
+                continue
+            }
+            let newCubie = CubieView(Cubie.all[position])
+            cubies.append(newCubie)
+            center.entity.addChild(newCubie.entity)
         }
     }
 }
 
 class CubieView {
-    static var cubies: [CubieView] = []
-    
     static let mesh = MeshResource.generateBox(size: 1, cornerRadius: 0.1)
-    static var material: SimpleMaterial = SimpleMaterial(color: .black, roughness: 1.0, isMetallic: true)
-    static var clear: Bool = false
     
-    var entity: ModelEntity
+    let entity: ModelEntity
+    let facelets: [FaceletView]
     
     init(_ cubie: Cubie) {
-        entity = ModelEntity(mesh: Self.mesh, materials: [Self.material])
+        let material = SimpleMaterial(color: Cube.main.transparent ? .clear : .black, roughness: 1.0, isMetallic: true)
+        entity = ModelEntity(mesh: Self.mesh, materials: [material])
+        
+        var facelets: [FaceletView] = []
         
         for facelet in cubie.facelets {
-            entity.addChild(FaceletView(facelet).entity)
+            let newFacelet = FaceletView(facelet)
+            facelets.append(newFacelet)
+            entity.addChild(newFacelet.entity)
         }
+        
+        self.facelets = facelets
         
         // place cubie relative to base
         entity.transform = Transform(translation: SIMD3<Float>(Float(cubie.x), Float(cubie.y), Float(cubie.z)))
-        
-        Self.cubies.append(self)
     }
     
-    static func toggle() {
-        material = SimpleMaterial(color: clear ? .clear : .black, roughness: 1.0, isMetallic: true)
-        clear.toggle()
+    func update(material: SimpleMaterial) {
+        entity.model?.materials = [material]
         
-        for cubie in cubies {
-            cubie.entity.model?.materials = [material]
+        for facelet in facelets {
+            facelet.update()
         }
     }
 }
 
 class FaceletView {
-    static var facelets: [FaceletView] = []
     var entity: ModelEntity
     var back: ModelEntity?
     var material: SimpleMaterial
@@ -86,9 +106,9 @@ class FaceletView {
     
     init(_ facelet: Facelet) {
         self.facelet = facelet
-        face = Cubie.allCubies[facelet.position.rawValue].faces[facelet.faceIndex]
+        face = Cubie.at(facelet.position).faces[facelet.faceIndex]
         
-        material = SimpleMaterial(color: Self.color(of: facelet), roughness: 1.0, isMetallic: true)
+        material = SimpleMaterial(color: Self.color(of: facelet, face: face), roughness: 1.0, isMetallic: true)
         entity = ModelEntity(mesh: Self.mesh, materials: [material])
         
         if face == .L || face == .R {
@@ -116,26 +136,26 @@ class FaceletView {
             entity.transform.translation = SIMD3<Float>(x: -0.501, y: 0, z: 0)
             entity.transform.rotation = simd_quatf(angle: -.pi/2, axis: [0,1,0])
         }
-        
-        Self.facelets.append(self)
     }
     
     func update() {
-        material = SimpleMaterial(color: Self.color(of: facelet), roughness: 1.0, isMetallic: true)
+        let color = Self.color(of: facelet, face: face)
+        material = SimpleMaterial(color: color, roughness: 1.0, isMetallic: true)
         entity.model?.materials = [material]
         back?.model?.materials = [material]
     }
     
-    static func color(of facelet: Facelet) -> NSColor {
-        let face = Cube.main.face(of: facelet)
+    static func color(of facelet: Facelet, face: Face) -> NSColor {
+        let faceColor = Cube.main.face(of: facelet)
+        let dim: Bool = face == .D || face == .B || face == (Cube.main.right ? .L : .R)
         
         switch face {
-        case .U: return .yellow
-        case .D: return .white
-        case .F: return .blue
-        case .B: return .green
-        case .R: return .red
-        case .L: return .orange
+        case .U: return .yellow.withAlphaComponent(dim ? 0.85 : 1)
+        case .D: return .white.withAlphaComponent(dim ? 0.85 : 1)
+        case .F: return .blue.withAlphaComponent(dim ? 0.85 : 1)
+        case .B: return .green.withAlphaComponent(dim ? 0.85 : 1)
+        case .R: return .red.withAlphaComponent(dim ? 0.85 : 1)
+        case .L: return .orange.withAlphaComponent(dim ? 0.85 : 1)
         }
     }
 }
