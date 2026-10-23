@@ -9,26 +9,47 @@ import Foundation
 
 struct AlgInput {
     let moves: [MoveInput]
+    let text: [String]
     
     init(alg: Alg) {
+        var premoves: [MoveInput] = []
+        for premove in alg.premoves {
+            premoves.append(contentsOf: premove.input)
+        }
+        
         var moves: [MoveInput] = []
         for move in alg.moves {
             moves.append(contentsOf: move.input)
         }
-        self.moves = moves
+        self.moves = premoves + moves
+        
+        
+        var text: [String] = []
+        if !premoves.isEmpty {
+            text.append(contentsOf: premoves.map { $0.string })
+            text[0] = "(" + text[0]
+            text[text.count - 1] = text[text.count - 1].dropLast().appending(") ")
+        }
+        text.append(contentsOf: moves.map { $0.string })
+        self.text = text
     }
     
-    var string: String {
-        return moves.map { $0.string }.joined(separator: "")
-    }
-    
-    func stringStart(completed n: Int) -> String {
-        return moves.dropLast(moves.count - n).map { $0.string }.joined(separator: "")
-    }
-    
-    func stringEnd(completed n: Int) -> String {
-        return moves.dropFirst(n).map { $0.string }.joined(separator: "")
-    }
+//    var string: String {
+//        var string = ""
+//        if !premoves.isEmpty {
+//            string = "(" + premoves.map { $0.string }.joined(separator: "") + ") "
+//        }
+//        string.append(moves.map { $0.string }.joined(separator: ""))
+//        return string
+//    }
+//    
+//    func stringStart(completed n: Int) -> String {
+//        return moves.dropLast(moves.count - n).map { $0.string }.joined(separator: "")
+//    }
+//    
+//    func stringEnd(completed n: Int) -> String {
+//        return moves.dropFirst(n).map { $0.string }.joined(separator: "")
+//    }
 }
 
 struct MoveInput {

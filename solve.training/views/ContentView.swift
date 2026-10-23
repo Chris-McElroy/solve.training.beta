@@ -7,12 +7,11 @@
 
 import SwiftUI
 
-let alg = Alg("D' R' D F2 D' R D R' F2 R")!
-let algInput: AlgInput = AlgInput(alg: alg)
-
 struct ContentView: View {
+    @State var cases: [Case] = methods.first!.cases
+    
     var body: some View {
-        TrainingView()
+        TrainingView(cases: cases)
     }
 }
 

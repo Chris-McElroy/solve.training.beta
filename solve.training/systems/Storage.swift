@@ -22,7 +22,8 @@ let methods: [Method] = [
             Group(name: "main", color: .black)
         ],
         cases: [
-            Case
+            Case(name: "us-p", step: "c2", group: "main", alg: Alg("D' R' D F2 D' R D R' F2 R")!, keyFacelets: []),
+            Case(name: "as-s", step: "c2", group: "main", alg: Alg("R F' r' U D R' D' R U' M' F")!, keyFacelets: []),
         ]
     )
 ]

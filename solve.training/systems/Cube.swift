@@ -32,6 +32,22 @@ class Cube: ObservableObject {
         
         pieces = newPieces
     }
+    
+    func exec(_ alg: Alg) {
+        for move in alg.moves {
+            exec(move)
+        }
+    }
+    
+    func undo(_ move: Move) {
+        exec(move.inverse)
+    }
+    
+    func scramble(_ alg: Alg) {
+        for move in alg.inverse.moves {
+            exec(move)
+        }
+    }
 }
 
 class Cubie {

@@ -10,24 +10,19 @@ import RealityKit
 
 struct CubeView: View {
     @ObservedObject var cube = Cube.main
-    @State var center: CubieView
-    @State var cubies: [CubieView] = []
-    @State var facelets: [FaceletView] = []
+    let center: CubieView
+    let cubies: [CubieView]
     
     var body: some View {
         RealityView { content in
-            // try changing perspective depth
+            // try changing perspective depth https://stackoverflow.com/questions/78487437/how-can-i-add-a-perspectivecamera-in-realityview-on-visionos-using-realitykit
             
             // have transparency toggle when hitting space
             
             content.add(center.entity)
+//            content.camera = .virtual
         } update: { content in
             // laterDO this is updating too much?
-            for facelet in facelets {
-                facelet.update()
-            }
-            
-            
             let material = SimpleMaterial(color: cube.transparent ? .clear : .black, roughness: 1.0, isMetallic: true)
                 
             for cubie in cubies {
@@ -50,6 +45,8 @@ struct CubeView: View {
         center.entity.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: -25).radians), roll: Float(Angle(degrees: -10).radians))
         center.entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
         
+        var cubies: [CubieView] = []
+        
         for position in 0..<27 {
             if position == 13 {
                 cubies.append(center)
@@ -59,6 +56,8 @@ struct CubeView: View {
             cubies.append(newCubie)
             center.entity.addChild(newCubie.entity)
         }
+        
+        self.cubies = cubies
     }
 }
 
@@ -149,7 +148,7 @@ class FaceletView {
         let faceColor = Cube.main.face(of: facelet)
         let dim: Bool = face == .D || face == .B || face == (Cube.main.right ? .L : .R)
         
-        switch face {
+        switch faceColor {
         case .U: return .yellow.withAlphaComponent(dim ? 0.85 : 1)
         case .D: return .white.withAlphaComponent(dim ? 0.85 : 1)
         case .F: return .blue.withAlphaComponent(dim ? 0.85 : 1)

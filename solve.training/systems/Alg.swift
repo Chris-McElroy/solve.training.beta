@@ -11,9 +11,14 @@ struct Alg {
     let premoves: [Move]
     let moves: [Move]
     
-    init(pre premoves: [Move] = [], _ moves: [Move]) {
-        self.premoves = premoves
+    init(_ moves: [Move]) {
+        self.premoves = []
         self.moves = moves
+    }
+    
+    init(pre premoves: Alg, _ moves: Alg) {
+        self.premoves = premoves.moves
+        self.moves = moves.moves
     }
     
     init?(_ string: String) {
@@ -42,7 +47,7 @@ struct Alg {
     }
     
     var inverse: Alg {
-        Alg(moves.map { $0.inverse }.reversed())
+        Alg((premoves + moves).map { $0.inverse }.reversed())
     }
 }
 
