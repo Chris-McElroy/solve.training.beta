@@ -14,7 +14,6 @@ class Cube: ObservableObject {
     
     @Published var update: Bool = true
     var pieces: [Piece] = Cube.solvedCube
-    var highlights: [Position] = []
     var transparent: Bool = false
     var right: Bool = true
     
@@ -176,24 +175,29 @@ struct Piece {
     }
     
     private var _orientation: Int
+
+    var highlights: [Int]
     
-    init(_ position: Position) {
+    init(_ position: Position, highlights: [Int] = []) {
         self.position = position
         _orientation = 0
+        self.highlights = highlights
     }
     
-    init(_ position: Int) {
+    init(_ position: Int, highlights: [Int] = []) {
         self.position = Position(rawValue: position)!
         _orientation = 0
+        self.highlights = highlights
     }
     
-    init(_ position: Position, o: Int) {
+    init(_ position: Position, o: Int, highlights: [Int] = []) {
         self.position = position
         _orientation = o
+        self.highlights = highlights
     }
     
     static func +(lhs: Piece, rhs: Int) -> Piece {
-        return Piece(lhs.position, o: (lhs._orientation + rhs) % Cubie.at(lhs.position).faces.count)
+        return Piece(lhs.position, o: (lhs._orientation + rhs) % Cubie.at(lhs.position).faces.count, highlights: lhs.highlights)
     }
     
     mutating func c() {

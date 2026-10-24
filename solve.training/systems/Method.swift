@@ -41,14 +41,14 @@ class Case {
     var premoves: [Alg?]
     var postmoves: [Alg?]
     var altAlgs: [Alg]
-    var keyFacelets: [Facelet]
+    var highlights: [Position: [Int]]
     
     var stats: [CaseStatus: CaseStats]
     
     init(name: String, step: String, group: String, status: CaseStatus = .unknown, alg: Alg,
          premoves: [Alg?] = [nil, Alg("U"), Alg("U2"), Alg("U'")],
          postmoves: [Alg?] = [nil, Alg("U"), Alg("U2"), Alg("U'")],
-         altAlgs: [Alg] = [], keyFacelets: [Facelet],
+         altAlgs: [Alg] = [], highlights: [Position: [Int]],
          stats: [CaseStatus : CaseStats] = [:]) {
         self.name = name
         self.step = step
@@ -58,7 +58,7 @@ class Case {
         self.premoves = premoves
         self.postmoves = postmoves
         self.altAlgs = altAlgs
-        self.keyFacelets = keyFacelets
+        self.highlights = highlights
         self.stats = stats
     }
 }

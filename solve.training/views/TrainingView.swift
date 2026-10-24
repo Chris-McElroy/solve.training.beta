@@ -25,7 +25,7 @@ struct TrainingView: View {
     
     var body: some View {
         ZStack {
-            TextField("input", text: $input)
+            TextEditor(text: $input)
                 .focused($focus)
                 .textFieldStyle(.plain)
                 .opacity(0.0000001)
@@ -90,23 +90,6 @@ struct TrainingView: View {
         .onAppear() {
             focus = true
             startNewTraining()
-            
-            // TODO implement highlighted cubies
-            // TODO implement transparency toggle
-            // TODO add postmoves
-            // TODO add c3 cases but don't select them for now
-            // TODO use c3 cases to further scramble things
-            // TODO add timer and stop at the end
-            
-            
-            // todos for list
-            // TODO add method list view with free cube option
-            // TODO record case stats
-            // TODO add case list view with colors and case things and times per notes
-            // TODO add case popup with cube preview, allow me to edit learning status
-            // TODO add search to case list view
-            // TODO add all the algs for c2 and c3, make this the full replacement for alpha
-            
         }
         .onChange(of: focus, { focus = true })
         .onChange(of: input, {
@@ -147,6 +130,10 @@ struct TrainingView: View {
         progress = 0
         success = true
         Cube.main.pieces = Cube.solvedCube
+        // i think postmoves go here??
+        for (position, highlight) in currentCase.highlights {
+            Cube.main.pieces[position.rawValue].highlights = highlight
+        }
         let newAlg: Alg
         if let premove = currentCase.premoves.randomElement() as? Alg {
             newAlg = Alg(pre: premove, currentCase.alg)
@@ -161,6 +148,18 @@ struct TrainingView: View {
     func processInput() {
         if input.isEmpty { return }
         let new = input.removeLast()
+        
+        if new == " " {
+            Cube.main.transparent.toggle()
+            Cube.main.update.toggle()
+            return
+        } else if new == "\n" {
+            if showEndCard {
+                startNewTraining()
+            }
+            return
+        }
+        
         guard alg.moves[progress].inputChr.contains(new) else {
             mistake = true
             success = false
