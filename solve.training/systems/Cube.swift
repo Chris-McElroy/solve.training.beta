@@ -10,10 +10,10 @@ import Combine
 
 class Cube: ObservableObject {
     static var main: Cube = Cube()
-    static let solvedCube: [Piece] = (0..<27).map { Piece($0) }
+    private static let solvedPieces: [Piece] = (0..<27).map { Piece($0) }
     
     @Published var update: Bool = true
-    var pieces: [Piece] = Cube.solvedCube
+    var pieces: [Piece] = Cube.solvedPieces
     var transparent: Bool = false
     var right: Bool = true
     
@@ -46,6 +46,12 @@ class Cube: ObservableObject {
         for move in alg.inverse.moves {
             exec(move)
         }
+    }
+    
+    func reset() {
+        pieces = Cube.solvedPieces
+        transparent = false
+        right = true
     }
 }
 

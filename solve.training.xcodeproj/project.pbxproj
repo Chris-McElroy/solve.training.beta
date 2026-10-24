@@ -10,22 +10,9 @@
 		831E1C4730818EB200BF3158 /* solve.training.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = solve.training.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		834E133D308B150E00763BB9 /* Exceptions for "solve.training" folder in "solve.training" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"solve-training-Info.plist",
-			);
-			target = 831E1C4630818EB200BF3158 /* solve.training */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		831E1C4930818EB200BF3158 /* solve.training */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				834E133D308B150E00763BB9 /* Exceptions for "solve.training" folder in "solve.training" target */,
-			);
 			path = solve.training;
 			sourceTree = "<group>";
 		};

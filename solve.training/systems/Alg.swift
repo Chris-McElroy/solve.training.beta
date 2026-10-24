@@ -8,38 +8,30 @@
 import Foundation
 
 struct Alg {
-    let premoves: [Move]
-    let moves: [Move]
+    var moves: [Move]
     
-    init(_ moves: [Move]) {
-        self.premoves = []
+    init(_ moves: [Move] = []) {
         self.moves = moves
-    }
-    
-    init(pre premoves: Alg, _ moves: Alg) {
-        self.premoves = premoves.moves
-        self.moves = moves.moves
     }
     
     init?(_ string: String) {
-        var premoves: [Move] = []
-        var moves: [Move] = []
+//        var premoves: [Move] = []
         let moveStrings = string.split(separator: " ")
-        if string.starts(with: "(") {
-            guard let prestring = string.dropFirst().split(separator: ")").first else { return nil }
-            for moveString in prestring {
-                guard let move = Move(String(moveString)) else { return nil }
-                premoves.append(move)
-            }
-            self.premoves = premoves
-        } else {
-            self.premoves = []
-        }
-        for moveString in moveStrings.dropFirst(premoves.count) {
+//        if string.starts(with: "(") {
+//            guard let prestring = string.dropFirst().split(separator: ")").first else { return nil }
+//            for moveString in prestring {
+//                guard let move = Move(String(moveString)) else { return nil }
+//                premoves.append(move)
+//            }
+//            self.premoves = premoves
+//        } else {
+//            self.premoves = []
+//        }
+        moves = []
+        for moveString in moveStrings {
             guard let move = Move(String(moveString)) else { return nil }
             moves.append(move)
         }
-        self.moves = moves
     }
     
     var string: String {
@@ -47,8 +39,10 @@ struct Alg {
     }
     
     var inverse: Alg {
-        Alg((premoves + moves).map { $0.inverse }.reversed())
+        Alg(moves.map { $0.inverse }.reversed())
     }
+    
+    static let AUFs: [Alg] = [Alg(), Alg([Move(.U, .c1)]), Alg([Move(.U, .c2)]), Alg([Move(.U, .p1)])]
 }
 
 struct Move: Hashable {
@@ -89,6 +83,11 @@ struct Move: Hashable {
         hasher.combine(slice)
         hasher.combine(turn)
     }
+    
+    static let myOrientations: [[Move?]] = [
+        [nil, Move(.y, .c1), Move(.y, .c2), Move(.y, .p1)],
+        [nil, Move(.x, .c2)],
+    ]
 }
 
 enum Slice: String {

@@ -21,10 +21,13 @@ let methods: [Method] = [
         groups: [
             Group(name: "main", color: .black)
         ],
+        // laterDO make .U2 move shortcut
         cases: [
-            Case(name: "us-p", step: "c2", group: "main", alg: Alg("D' R' D F2 D' R D R' F2 R")!, highlights: [.UFR: [0, 1, 2], .DFR: [0, 1, 2]]),
-            Case(name: "as-s", step: "c2", group: "main", alg: Alg("R F' r' U D R' D' R U' M' F")!, highlights: [.UFR: [0, 1, 2], .DFR: [0, 1, 2]]),
+            Case(name: "us-p", step: "c2", group: "main", alg: Alg("D' R' D F2 D' R D R' F2 R")!, setup: c2Setup, postmoves: Alg("U2")!, highlights: [.DFR: [0, 1, 2], .UBL: [0, 1, 2]]),
+            Case(name: "as-s", step: "c2", group: "main", alg: Alg("R F' r' U D R' D' R U' M' F")!, setup: c2Setup, postmoves: Alg("U2")!, highlights: [.DFR: [0, 1, 2], .UBL: [0, 1, 2]]),
         ]
     )
 ]
+
+let c2Setup: [(pre: Alg, post: Alg)] = [(pre: Alg(), post: Alg()), (pre: Alg("D")!, post: Alg("D'")!)]
 

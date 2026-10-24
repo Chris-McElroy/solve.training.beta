@@ -12,12 +12,9 @@ struct TrainingView: View {
     
     @State var input: String = ""
     @FocusState var focus: Bool
-    @State var progress: Int = 0
     @State var cubeView = CubeView()
-    @State var currentCase: Case? = nil
-    @State var alg: AlgInput = AlgInput(alg: Alg([]))
-    @State var mistake: Bool = false
-    @State var success: Bool = true
+    @State var currentCase: TrainingCase? = nil
+    @State var currentCaseIndex: Int? = nil
     @State var casesDone: Int = 0
     @State var startTime: TimeInterval = Date().timeIntervalSinceReferenceDate
     @State var successfulCases: Int = 0
@@ -33,20 +30,16 @@ struct TrainingView: View {
                 .frame(height: 800)
             VStack {
                 Spacer()
-                Text(currentCase?.name ?? "")
+                Text(currentCase?.base.name ?? "")
                     .font(.custom("Rubik-Bold", size: 100))
                 Spacer().frame(height: 500)
                 HStack(spacing: 0) {
-                    Text(alg.text.dropLast(alg.text.count - progress).joined(separator: ""))
+                    Text(currentCase?.completedText ?? "")
                         .foregroundStyle(.green)
-                    if progress < alg.text.count {
-                        Text(alg.text[progress])
-                            .foregroundStyle(mistake ? .red : .white)
-                        if progress < (alg.text.count - 1) {
-                            Text(alg.text.dropFirst(progress + 1).joined(separator: ""))
-                                .foregroundStyle(.tertiary)
-                        }
-                    }
+                    Text(currentCase?.currentText ?? "")
+                        .foregroundStyle((currentCase?.mistake ?? false) ? .red : .white)
+                    Text(currentCase?.upcomingText ?? "")
+                        .foregroundStyle(.tertiary)
                 }
                 .font(.custom("Rubik-Regular", size: 80))
                 Spacer()
@@ -93,7 +86,23 @@ struct TrainingView: View {
         }
         .onChange(of: focus, { focus = true })
         .onChange(of: input, {
-            processInput()
+            if input.isEmpty { return }
+            
+            let inputChr = input.removeLast()
+            
+            if inputChr == "\n" {
+                if showEndCard {
+                    startNewTraining()
+                }
+                return
+            }
+            currentCase?.processInput(inputChr)
+            
+            if currentCase?.finished ?? false {
+                Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
+                    newCase()
+                })
+            }
         })
     }
     
@@ -107,12 +116,10 @@ struct TrainingView: View {
     }
     
     func newCase() {
-        if let currentCase {
+        if let currentCaseIndex {
             casesDone += 1
-            if success {
+            if currentCase?.success ?? false {
                 successfulCases += 1
-            } else {
-                success = true
             }
             
             if Date().timeIntervalSinceReferenceDate - startTime >= 60 {
@@ -120,60 +127,16 @@ struct TrainingView: View {
                 return
             }
             
-            if let newCase = cases.drop(while: { $0 === currentCase }).randomElement() {
-                self.currentCase = newCase
+            if cases.count > 1 {
+                var newIndex = (0..<(cases.count - 1)).randomElement() ?? 0
+                if newIndex > currentCaseIndex {
+                    newIndex += 1
+                }
+                self.currentCaseIndex = newIndex
             }
-        } else if let newCase = cases.randomElement() {
-            currentCase = newCase
-        }
-        guard let currentCase else { return }
-        progress = 0
-        success = true
-        Cube.main.pieces = Cube.solvedCube
-        // i think postmoves go here??
-        for (position, highlight) in currentCase.highlights {
-            Cube.main.pieces[position.rawValue].highlights = highlight
-        }
-        let newAlg: Alg
-        if let premove = currentCase.premoves.randomElement() as? Alg {
-            newAlg = Alg(pre: premove, currentCase.alg)
         } else {
-            newAlg = currentCase.alg
+            currentCaseIndex = (0..<cases.count).randomElement() ?? 0
         }
-        alg = AlgInput(alg: newAlg)
-        Cube.main.scramble(newAlg)
-        Cube.main.update.toggle()
-    }
-    
-    func processInput() {
-        if input.isEmpty { return }
-        let new = input.removeLast()
-        
-        if new == " " {
-            Cube.main.transparent.toggle()
-            Cube.main.update.toggle()
-            return
-        } else if new == "\n" {
-            if showEndCard {
-                startNewTraining()
-            }
-            return
-        }
-        
-        guard alg.moves[progress].inputChr.contains(new) else {
-            mistake = true
-            success = false
-            return
-        }
-        mistake = false
-        Cube.main.exec(alg.moves[progress].move)
-        Cube.main.update.toggle()
-        progress += 1
-        
-        if progress == alg.moves.count {
-            Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
-                newCase()
-            })
-        }
+        currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
     }
 }
