@@ -20,6 +20,8 @@ struct CubeView: View {
             
             content.add(center.entity)
         } update: { content in
+            center.orient()
+            
             // laterDO this is updating too much?
             let material = SimpleMaterial(color: cube.transparent ? .clear : .black, roughness: 1.0, isMetallic: true)
                 
@@ -32,9 +34,7 @@ struct CubeView: View {
     
     init() {
         center = CubieView(.C)
-        
-        center.entity.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: -25).radians), roll: Float(Angle(degrees: -10).radians))
-        center.entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
+        center.orient()
         
         var cubies: [CubieView] = []
         
@@ -90,6 +90,14 @@ class CubieView {
         for facelet in facelets {
             facelet.highlight = highlight.contains(facelet.facelet.faceIndex)
             facelet.update()
+        }
+    }
+    
+    func orient() {
+        // only reorient if needed
+        if entity.transform.rotation.axis.z.isNaN || ((entity.transform.rotation.axis.z > 0) == Cube.main.right) {
+            entity.transform = Transform(pitch: Float(Angle(degrees: 27).radians), yaw: Float(Angle(degrees: Cube.main.right ? -26 : 26).radians), roll: Float(Angle(degrees: Cube.main.right ? -13 : 13).radians))
+            entity.transform.scale = SIMD3<Float>(0.2, 0.2, 0.2)
         }
     }
 }

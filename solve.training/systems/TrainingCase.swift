@@ -10,7 +10,7 @@ import Foundation
 class TrainingCase {
     let base: Case
     
-    let setup: (pre: Alg, post: Alg)
+    let setup: Setup
     let pre: Alg
     let alg: Alg
     let post: Alg
@@ -32,7 +32,7 @@ class TrainingCase {
     init(from base: Case) {
         self.base = base
         
-        var setup = base.setup.randomElement() ?? (pre: Alg(), post: Alg())
+        var setup = base.setup.randomElement() ?? Setup()
         let pre = base.premoves.randomElement() ?? Alg()
         var alg = base.alg
         let post = base.postmoves
@@ -101,7 +101,7 @@ class TrainingCase {
         currentText = textBits[0]
         upcomingText = textBits.dropFirst().joined()
         
-        cube.reset()
+        cube.reset(right: setup.right)
         for orientationSet in methods[0].orientations {
             if let orientation = orientationSet.randomElement() as? Move {
                 cube.exec(orientation)

@@ -29,5 +29,5 @@ let methods: [Method] = [
     )
 ]
 
-let c2Setup: [(pre: Alg, post: Alg)] = [(pre: Alg(), post: Alg()), (pre: Alg("D")!, post: Alg("D'")!)]
+let c2Setup: [Setup] = [Setup(pre: Alg(), post: Alg()), Setup(pre: Alg("D")!, post: Alg("D'")!, right: false)]
 

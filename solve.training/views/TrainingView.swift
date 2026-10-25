@@ -27,7 +27,7 @@ struct TrainingView: View {
                 .textFieldStyle(.plain)
                 .opacity(0.0000001)
             cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
-                .frame(height: 800)
+                .frame(width: 800, height: 800)
             VStack {
                 Spacer()
                 Text(currentCase?.base.name ?? "")
@@ -49,10 +49,9 @@ struct TrainingView: View {
                     Spacer()
                     VStack {
                         Spacer()
-                        Text("you trained \(casesDone) cases!")
+                        Text("you trained \(casesDone) case\(casesDone > 1 ? "s" : "")!")
                             .font(.custom("Rubik-Bold", size: 70))
-                        Spacer()
-                            .frame(height: 300) // laterDO track stats and put them here
+                        Spacer().frame(height: 300) // laterDO track stats and put them here
                         /*
                          it should be a table that has rows for total, then each learning status that was trained
                          and shows full stats totalling across learning status type
@@ -61,14 +60,18 @@ struct TrainingView: View {
                          percent success (idk best way to say this)
                          total exec recog /move times
                          */
-                        Text("retrain")
-                            .font(.custom("Rubik-Regular", size: 40))
-                            .padding(.all, 30)
-                            .background(.pink)
-                            .cornerRadius(40)
-                            .onTapGesture {
-                                startNewTraining()
-                            }
+                        Text("enter to retrain")
+                            .font(.custom("Rubik-Regular", size: 50))
+                        Spacer().frame(height: 40)
+                        Text("space to exit")
+                            .font(.custom("Rubik-Regular", size: 50))
+//                            .padding(.horizontal, 60)
+//                            .padding(.vertical, 35)
+//                            .background(Color(hue: 0.842, saturation: 1, brightness: 1))
+//                            .cornerRadius(10)
+//                            .onTapGesture {
+//                                startNewTraining()
+//                            }
                         // laterDO add exit button
                         Spacer()
                     }
@@ -129,7 +132,7 @@ struct TrainingView: View {
             
             if cases.count > 1 {
                 var newIndex = (0..<(cases.count - 1)).randomElement() ?? 0
-                if newIndex > currentCaseIndex {
+                if newIndex >= currentCaseIndex {
                     newIndex += 1
                 }
                 self.currentCaseIndex = newIndex

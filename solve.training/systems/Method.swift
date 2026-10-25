@@ -33,6 +33,18 @@ struct Group {
     let color: Color
 }
 
+struct Setup {
+    var pre: Alg
+    var post: Alg
+    var right: Bool
+    
+    init(pre: Alg = Alg(), post: Alg = Alg(), right: Bool = true) {
+        self.pre = pre
+        self.post = post
+        self.right = right
+    }
+}
+
 class Case {
     var name: String
     var step: String
@@ -41,7 +53,7 @@ class Case {
     
     var alg: Alg
     var premoves: [Alg]
-    var setup: [(pre: Alg, post: Alg)]
+    var setup: [Setup]
     var postmoves: Alg
     var altAlgs: [Alg]
     var highlights: [Position: [Int]]
@@ -54,7 +66,7 @@ class Case {
          status: CaseStatus = .unknown,
          alg: Alg,
          premoves: [Alg] = Alg.AUFs,
-         setup: [(pre: Alg, post: Alg)] = [],
+         setup: [Setup] = [],
          postmoves: Alg = Alg(),
          altAlgs: [Alg] = [],
          highlights: [Position: [Int]],

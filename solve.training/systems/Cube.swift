@@ -48,10 +48,10 @@ class Cube: ObservableObject {
         }
     }
     
-    func reset() {
+    func reset(right: Bool = true) {
         pieces = Cube.solvedPieces
         transparent = false
-        right = true
+        self.right = right
     }
 }
 
