@@ -162,7 +162,7 @@ enum Face {
     case U, D, F, B, R, L
 }
 
-struct Facelet {
+struct Facelet: Hashable {
     let position: Position
     let faceIndex: Int
     

@@ -10,10 +10,12 @@ import Foundation
 class TrainingCase {
     let base: Case
     
+    let orientations: [Move]
     let setup: Setup
     let pre: Alg
     let alg: Alg
     let post: Alg
+    let postScramble: [Position: Shift]
     
     let moveInputs: [MoveInput]
     
@@ -25,6 +27,7 @@ class TrainingCase {
     
     var mistake: Bool = false
     var success: Bool = true
+    var started: Bool = false
     var finished: Bool = false
     
     let cube = Cube.main
@@ -63,6 +66,7 @@ class TrainingCase {
         self.pre = pre
         self.alg = alg
         self.post = post
+        self.postScramble = base.postScramble.getScramble()
         
         var text: [String] = []
         var moveInputs: [MoveInput] = []
@@ -102,14 +106,17 @@ class TrainingCase {
         upcomingText = textBits.dropFirst().joined()
         
         cube.reset(right: setup.right)
+        
+        var orientations: [Move] = []
         for orientationSet in methods[0].orientations {
             if let orientation = orientationSet.randomElement() as? Move {
+                orientations.append(orientation)
                 cube.exec(orientation)
             }
         }
-        if let postAUF = Alg.AUFs.randomElement() {
-            cube.scramble(postAUF)
-        }
+        self.orientations = orientations
+        
+        cube.scramble(postScramble)
         cube.scramble(setup.post)
         for (position, highlight) in base.highlights {
             Cube.main.pieces[position.rawValue].highlights = highlight
@@ -139,6 +146,7 @@ class TrainingCase {
         Cube.main.exec(moveInputs[progress].move)
         Cube.main.update.toggle()
         progress += 1
+        started = true
         
         completedText = textBits.dropLast(textBits.count - progress).joined()
         currentText = progress < textBits.count ? textBits[progress] : ""
@@ -147,6 +155,34 @@ class TrainingCase {
         if progress == textBits.count {
             finished = true
         }
+    }
+    
+    func reset() {
+        progress = 0
+        mistake = false
+        success = true
+        started = false
+        finished = false
+        
+        completedText = ""
+        currentText = textBits[0]
+        upcomingText = textBits.dropFirst().joined()
+        
+        cube.reset(right: setup.right)
+        for orientation in orientations {
+            cube.exec(orientation)
+        }
+        
+        cube.scramble(postAUF)
+        cube.scramble(setup.post)
+        for (position, highlight) in base.highlights {
+            Cube.main.pieces[position.rawValue].highlights = highlight
+        }
+        cube.scramble(post)
+        cube.scramble(alg)
+        cube.scramble(pre)
+        cube.scramble(setup.pre)
+        Cube.main.update.toggle()
     }
 }
 

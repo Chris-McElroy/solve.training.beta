@@ -19,6 +19,7 @@ struct TrainingView: View {
     @State var startTime: TimeInterval = Date().timeIntervalSinceReferenceDate
     @State var successfulCases: Int = 0
     @State var showEndCard: Bool = false
+    @State var mode: TrainingMode = .learning
     
     var body: some View {
         ZStack {
@@ -28,18 +29,22 @@ struct TrainingView: View {
                 .opacity(0.0000001)
             cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
                 .frame(width: 800, height: 800)
+                .opacity(!(currentCase?.started ?? false) || (mode != .noCube) || (currentCase?.mistake ?? false) ? 1 : 0)
             VStack {
                 Spacer()
                 Text(currentCase?.base.name ?? "")
                     .font(.custom("Rubik-Bold", size: 100))
+                    .opacity((mode == .learning) ? 1 : 0)
                 Spacer().frame(height: 500)
                 HStack(spacing: 0) {
                     Text(currentCase?.completedText ?? "")
                         .foregroundStyle(.green)
                     Text(currentCase?.currentText ?? "")
                         .foregroundStyle((currentCase?.mistake ?? false) ? .red : .white)
+                        .opacity((mode == .learning) || (currentCase?.mistake ?? false) ? 1 : 0)
                     Text(currentCase?.upcomingText ?? "")
                         .foregroundStyle(.tertiary)
+                        .opacity((mode == .learning) ? 1 : 0)
                 }
                 .font(.custom("Rubik-Regular", size: 80))
                 Spacer()
@@ -119,6 +124,12 @@ struct TrainingView: View {
     }
     
     func newCase() {
+        if currentCase?.base.status == .memorizing && mode == .learning {
+            mode = .noAlg
+            currentCase?.reset()
+            return
+        }
+        
         if let currentCaseIndex {
             casesDone += 1
             if currentCase?.success ?? false {
@@ -140,6 +151,19 @@ struct TrainingView: View {
         } else {
             currentCaseIndex = (0..<cases.count).randomElement() ?? 0
         }
+        
+        let newBase = cases[currentCaseIndex ?? 0]
+        
+        switch newBase.status {
+        case .unknown, .memorizing: mode = .learning
+        case .training: mode = .noAlg
+        case .learned: mode = .noCube
+        }
+        
         currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
     }
+}
+
+enum TrainingMode {
+    case learning, noAlg, noCube
 }
