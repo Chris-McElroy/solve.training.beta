@@ -177,7 +177,7 @@ enum Turn: String {
     }
 }
 
-struct Shift {
+struct Shift: Equatable {
     let oldPos: Position
     let rotation: Int
     

@@ -21,8 +21,7 @@ class Cube: ObservableObject {
         pieces[facelet.position.rawValue].face(of: facelet)
     }
     
-    func exec(_ move: Move) {
-        guard let shifts = moveShifts[move.simplify] else { return }
+    func exec(_ shifts: [Position: Shift]) {
         var newPieces = pieces
         
         for (position, shift) in shifts {
@@ -30,6 +29,17 @@ class Cube: ObservableObject {
         }
         
         pieces = newPieces
+    }
+    
+    func exec(_ move: Move) {
+        guard let shifts = moveShifts[move.simplify] else { return }
+        exec(shifts)
+    }
+    
+    func exec(_ shiftList: [[Position: Shift]]) {
+        for shifts in shiftList {
+            exec(shifts)
+        }
     }
     
     func exec(_ alg: Alg) {

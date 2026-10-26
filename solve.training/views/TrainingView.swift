@@ -152,15 +152,13 @@ struct TrainingView: View {
             currentCaseIndex = (0..<cases.count).randomElement() ?? 0
         }
         
-        let newBase = cases[currentCaseIndex ?? 0]
+        currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
         
-        switch newBase.status {
+        switch currentCase?.base.status ?? .unknown {
         case .unknown, .memorizing: mode = .learning
         case .training: mode = .noAlg
         case .learned: mode = .noCube
         }
-        
-        currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
     }
 }
 

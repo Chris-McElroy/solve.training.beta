@@ -50,13 +50,13 @@ class Case {
     var step: String
     var group: String
     var status: CaseStatus
-    var highlights: [Position: [Int]]
     
-    var alg: Alg
     var premoves: [Alg]
-    var setup: [Setup]
+    var alg: Alg
     var postmoves: Alg
+    var setup: [Setup]
     var postScramble: PostScramble
+    var highlights: [Position: [Int]]
     
     var altAlgs: [Alg]
     
@@ -66,13 +66,13 @@ class Case {
          step: String,
          group: String,
          status: CaseStatus = .unknown,
-         highlights: [Position: [Int]],
          
-         alg: Alg,
          premoves: [Alg] = Alg.AUFs,
-         setup: [Setup] = [],
+         alg: Alg,
          postmoves: Alg = Alg(),
+         setup: [Setup] = [],
          postScramble: PostScramble = PostScramble(),
+         highlights: [Position: [Int]],
          
          altAlgs: [Alg] = [],
          
@@ -82,13 +82,13 @@ class Case {
         self.step = step
         self.group = group
         self.status = status
-        self.highlights = highlights
         
-        self.alg = alg
         self.premoves = premoves
-        self.setup = setup
+        self.alg = alg
         self.postmoves = postmoves
+        self.setup = setup
         self.postScramble = postScramble
+        self.highlights = highlights
         
         self.altAlgs = altAlgs
         
@@ -128,9 +128,8 @@ struct PostScramble {
         self.algOptions = algOptions
     }
     
-    func getScramble() -> [Position: Shift] {
-        var scramble: [Position: Shift] = [:]
-        
+    func getScramble() -> [[Position: Shift]] {
+        var freeShifts: [Position: Shift] = [:]
         
         /*
          
@@ -154,13 +153,13 @@ struct PostScramble {
             let pieceOptions = remainingPieces.intersection(constraint.options.keys)
             guard let piece = pieceOptions.randomElement() else {
                 print("ran out of options!", unsolvedCorners, cornerConstraints, remainingPieces, remainingPositions, remainingConstraints)
-                return [:]
+                return []
             }
             remainingPieces.remove(piece)
             remainingPositions.remove(constraint.position)
             let rotation = constraint.options[piece]!.randomElement()!
             
-            scramble[constraint.position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[constraint.position] = Shift(oldPos: piece, rotation: rotation)
             
             orientationParity += rotation
             recordPositionParity(piece, constraint.position)
@@ -171,10 +170,8 @@ struct PostScramble {
             // TODO find correct switch
         }
         
-        while !remainingConstraints.isEmpty && remainingPieces.count == 1 {
-            // TODO rotation
-        }
-        
+        // last constraint does not need to be checked if everything is functioning properly
+        // so proceeds to remainingPieces.count == 1
         
         while remainingPieces.count > 2 {
             let piece = remainingPieces.randomElement()!
@@ -183,7 +180,7 @@ struct PostScramble {
             let position = remainingPositions.randomElement()!
             remainingPositions.remove(position)
             
-            scramble[position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[position] = Shift(oldPos: piece, rotation: rotation)
             
             orientationParity += rotation
             recordPositionParity(piece, position)
@@ -207,11 +204,11 @@ struct PostScramble {
             recordPositionParity(lastPiece, position2)
             
             if positionParity {
-                scramble[position1] = Shift(oldPos: nextPiece, rotation: rotation1)
-                scramble[position2] = Shift(oldPos: lastPiece, rotation: rotation2)
+                freeShifts[position1] = Shift(oldPos: nextPiece, rotation: rotation1)
+                freeShifts[position2] = Shift(oldPos: lastPiece, rotation: rotation2)
             } else {
-                scramble[position2] = Shift(oldPos: nextPiece, rotation: rotation1)
-                scramble[position1] = Shift(oldPos: lastPiece, rotation: rotation2)
+                freeShifts[position2] = Shift(oldPos: nextPiece, rotation: rotation1)
+                freeShifts[position1] = Shift(oldPos: lastPiece, rotation: rotation2)
             }
         }
         
@@ -219,7 +216,7 @@ struct PostScramble {
             let piece = remainingPieces.first!
             let rotation = (3 - (orientationParity % 3)) % 3
             let position = remainingPositions.first!
-            scramble[position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[position] = Shift(oldPos: piece, rotation: rotation)
         }
         
         
@@ -246,13 +243,13 @@ struct PostScramble {
             let pieceOptions = remainingPieces.intersection(constraint.options.keys)
             guard let piece = pieceOptions.randomElement() else {
                 print("ran out of options!", unsolvedCorners, cornerConstraints, remainingPieces, remainingPositions, remainingConstraints)
-                return [:]
+                return []
             }
             remainingPieces.remove(piece)
             remainingPositions.remove(constraint.position)
             let rotation = constraint.options[piece]!.randomElement()!
             
-            scramble[constraint.position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[constraint.position] = Shift(oldPos: piece, rotation: rotation)
             
             orientationParity += rotation
             recordPositionParity(piece, constraint.position)
@@ -262,9 +259,8 @@ struct PostScramble {
             // TODO find correct switch
         }
         
-        while !remainingConstraints.isEmpty && remainingPieces.count == 1 {
-            // TODO rotation
-        }
+        // last constraint does not need to be checked if everything is functioning properly
+        // so proceeds to remainingPieces.count == 1
         
         
         while remainingPieces.count > 2 {
@@ -274,7 +270,7 @@ struct PostScramble {
             let position = remainingPositions.randomElement()!
             remainingPositions.remove(position)
             
-            scramble[position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[position] = Shift(oldPos: piece, rotation: rotation)
             
             orientationParity += rotation
             recordPositionParity(piece, position)
@@ -298,11 +294,11 @@ struct PostScramble {
             recordPositionParity(lastPiece, position2)
             
             if positionParity {
-                scramble[position1] = Shift(oldPos: nextPiece, rotation: rotation1)
-                scramble[position2] = Shift(oldPos: lastPiece, rotation: rotation2)
+                freeShifts[position1] = Shift(oldPos: nextPiece, rotation: rotation1)
+                freeShifts[position2] = Shift(oldPos: lastPiece, rotation: rotation2)
             } else {
-                scramble[position2] = Shift(oldPos: nextPiece, rotation: rotation1)
-                scramble[position1] = Shift(oldPos: lastPiece, rotation: rotation2)
+                freeShifts[position2] = Shift(oldPos: nextPiece, rotation: rotation1)
+                freeShifts[position1] = Shift(oldPos: lastPiece, rotation: rotation2)
             }
         }
         
@@ -310,18 +306,56 @@ struct PostScramble {
             let piece = remainingPieces.first!
             let rotation = orientationParity&1 == 0 ? 0 : 1
             let position = remainingPositions.first!
-            scramble[position] = Shift(oldPos: piece, rotation: rotation)
+            freeShifts[position] = Shift(oldPos: piece, rotation: rotation)
         }
         
-        // TODO add postAUF
         
-        return scramble
+        /*
+         
+         
+         ALG shifts
+         
+         
+         */
+        
+        let alg = algOptions.randomElement() ?? Alg()
+        var allShifts = alg.moves.compactMap { moveShifts[$0] }
+        
+        // super cool i did this but not really necessary i realized
+//        for move in alg.moves {
+//            let newShifts = moveShifts[move] ?? [:]
+//            let oldShifts = scramble
+//            
+//            for (newPos, shift) in newShifts {
+//                if let oldShift = oldShifts[shift.oldPos] {
+//                    scramble[newPos] = Shift(oldPos: oldShift.oldPos,
+//                                             rotation: (oldShift.rotation + shift.rotation) % Cubie.at(oldShift.oldPos).faces.count)
+//                    // making sure i don't overwrite new shifts
+//                    if scramble[shift.oldPos] == oldShift {
+//                        scramble[shift.oldPos] = nil
+//                    }
+//                } else {
+//                    scramble[newPos] = shift
+//                }
+//            }
+//        }
+        
+        allShifts.append(freeShifts)
+        return allShifts
         
         func recordPositionParity(_ newStart: Position, _ newEnd: Position) {
-            if let end = forwardPaths[newEnd] {
+            if newStart == newEnd {
+                return
+            } else if let end = forwardPaths[newEnd] {
                 if let start = backwardPaths[newStart] {
-                    if start == end {
-                        // AB + BA = full cycle
+                    if start == newEnd {
+                        // end = A
+                        // start = B
+                        // if start == B,
+                        // then the other cycle goes B to A
+                        // so then end = A
+                        // i think
+                        // AB + BFDCA = full cycle
                         forwardPaths[newEnd] = nil
                         backwardPaths[newStart] = nil
                     } else {

@@ -15,7 +15,7 @@ class TrainingCase {
     let pre: Alg
     let alg: Alg
     let post: Alg
-    let postScramble: [Position: Shift]
+    let postScramble: [[Position: Shift]]
     
     let moveInputs: [MoveInput]
     
@@ -116,7 +116,7 @@ class TrainingCase {
         }
         self.orientations = orientations
         
-        cube.scramble(postScramble)
+        cube.exec(postScramble)
         cube.scramble(setup.post)
         for (position, highlight) in base.highlights {
             Cube.main.pieces[position.rawValue].highlights = highlight
@@ -173,7 +173,7 @@ class TrainingCase {
             cube.exec(orientation)
         }
         
-        cube.scramble(postAUF)
+        cube.exec(postScramble)
         cube.scramble(setup.post)
         for (position, highlight) in base.highlights {
             Cube.main.pieces[position.rawValue].highlights = highlight
