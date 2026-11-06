@@ -163,11 +163,91 @@ struct PostScramble {
             
             orientationParity += rotation
             recordPositionParity(piece, constraint.position)
-            
         }
         
         while !remainingConstraints.isEmpty && remainingPieces.count == 2 {
-            // TODO find correct switch
+            let constraint = remainingConstraints.removeFirst()
+            let pieceOptions = remainingPieces.intersection(constraint.options.keys)
+            
+            if pieceOptions.count == 0 {
+                print("ran out of options!", unsolvedCorners, cornerConstraints, remainingPieces, remainingPositions, remainingConstraints)
+                return []
+            } else if pieceOptions.count == 1 {
+                let nextPiece = pieceOptions.first!
+                remainingPieces.remove(nextPiece)
+                let lastPiece = remainingPieces.first!
+                remainingPieces.remove(lastPiece)
+                remainingPositions.remove(constraint.position)
+                let lastPosition = remainingPositions.first!
+                remainingPositions.remove(lastPosition)
+                let rotation1: Int
+                let rotation2: Int
+                
+                if remainingConstraints.isEmpty {
+                    rotation1 = constraint.options[nextPiece]!.randomElement()!
+                } else {
+                    let lastConstraint = remainingConstraints.first!
+                    var options: [Int] = []
+                    for option in constraint.options[nextPiece]! {
+                        let neededRotation = (3 - ((orientationParity + option) % 3)) % 3
+                        if lastConstraint.options[lastPiece]!.contains(neededRotation) {
+                            options.append(option)
+                        }
+                    }
+                    guard let finalRotation = options.randomElement() else {
+                        print("ran out of rotations", unsolvedCorners, cornerConstraints)
+                        return []
+                    }
+                    
+                    rotation1 = finalRotation
+                }
+                
+                orientationParity += rotation1
+                rotation2 = (3 - (orientationParity % 3)) % 3
+                
+                recordPositionParity(nextPiece, constraint.position)
+                recordPositionParity(lastPiece, lastPosition)
+                
+                if !positionParity {
+                    print("error, position parity", unsolvedCorners, cornerConstraints)
+                    return []
+                }
+                
+                freeShifts[constraint.position] = Shift(oldPos: nextPiece, rotation: rotation1)
+                freeShifts[lastPosition] = Shift(oldPos: lastPiece, rotation: rotation2)
+            } else {
+                let piece1 = pieceOptions.randomElement()!
+                remainingPieces.remove(piece1)
+                let piece2 = remainingPieces.first!
+                remainingPieces.remove(piece2)
+                
+                let position1 = constraint.position
+                remainingPositions.remove(constraint.position)
+                let position2 = remainingPositions.first!
+                
+                recordPositionParity(piece1, position1)
+                recordPositionParity(piece2, position2)
+                
+                if positionParity {
+                    if remainingConstraints.isEmpty {
+                        let rotation1 = constraint.options[piece1]!.randomElement()!
+                        orientationParity += rotation1
+                        let rotation2 = (3 - (orientationParity % 3)) % 3
+                        
+                        freeShifts[position1] = Shift(oldPos: piece1, rotation: rotation1)
+                        freeShifts[position2] = Shift(oldPos: piece2, rotation: rotation2)
+                    } else {
+                        // TODO deal with this
+                    }
+                } else if remainingConstraints.isEmpty {
+                    // TODO deal with this
+                } else if let options = remainingConstraints.first!.options[piece1] {
+                    // TODO deal with this
+                } else {
+                    print("out of options! id code a572", unsolvedCorners, cornerConstraints)
+                    return []
+                }
+            }
         }
         
         // last constraint does not need to be checked if everything is functioning properly

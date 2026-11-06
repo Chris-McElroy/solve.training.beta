@@ -33,6 +33,7 @@ struct TrainingView: View {
             VStack {
                 Spacer()
                 Text(currentCase?.base.name ?? "")
+                    .scaledToFit()
                     .font(.custom("Rubik-Bold", size: 100))
                     .opacity((mode == .learning) ? 1 : 0)
                 Spacer().frame(height: 500)
@@ -46,9 +47,12 @@ struct TrainingView: View {
                         .foregroundStyle(.tertiary)
                         .opacity((mode == .learning) ? 1 : 0)
                 }
+                .scaledToFit()
                 .font(.custom("Rubik-Regular", size: 80))
                 Spacer()
             }
+            .minimumScaleFactor(0.01)
+            .lineLimit(1)
             if showEndCard {
                 HStack {
                     Spacer()
@@ -65,10 +69,10 @@ struct TrainingView: View {
                          percent success (idk best way to say this)
                          total exec recog /move times
                          */
-                        Text("enter to retrain")
+                        Text("enter to exit")
                             .font(.custom("Rubik-Regular", size: 50))
                         Spacer().frame(height: 40)
-                        Text("space to exit")
+                        Text("space to retrain")
                             .font(.custom("Rubik-Regular", size: 50))
 //                            .padding(.horizontal, 60)
 //                            .padding(.vertical, 35)
@@ -98,12 +102,13 @@ struct TrainingView: View {
             
             let inputChr = input.removeLast()
             
-            if inputChr == "\n" {
-                if showEndCard {
+            if showEndCard {
+                if inputChr == " " {
                     startNewTraining()
                 }
                 return
             }
+            
             currentCase?.processInput(inputChr)
             
             if currentCase?.finished ?? false {
@@ -115,12 +120,12 @@ struct TrainingView: View {
     }
     
     func startNewTraining() {
-        currentCase = nil
         showEndCard = false
+        currentCase = nil
+        newCase()
+        startTime = Date().timeIntervalSinceReferenceDate
         casesDone = 0
         successfulCases = 0
-        startTime = Date().timeIntervalSinceReferenceDate
-        newCase()
     }
     
     func newCase() {

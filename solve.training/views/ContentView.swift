@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var cases: [Case] = methods.first!.cases
+    @State var cases: [Case] = methods.first!.cases.filter({ $0.status == .memorizing })
     
     var body: some View {
         TrainingView(cases: cases)

@@ -11,6 +11,7 @@ class TrainingCase {
     let base: Case
     
     let orientations: [Move]
+    let canceledMoves: Alg
     let setup: Setup
     let pre: Alg
     let alg: Alg
@@ -39,6 +40,7 @@ class TrainingCase {
         let pre = base.premoves.randomElement() ?? Alg()
         var alg = base.alg
         let post = base.postmoves
+        var canceledMoves = Alg()
         
         if let setupCancelIndex = setup.pre.moves.lastIndex(where: { $0.slice == .D }) {
             if alg.moves.first?.slice == .D {
@@ -54,6 +56,7 @@ class TrainingCase {
         if let setupCancelIndex = setup.post.moves.firstIndex(where: { $0.slice == .D }) {
             if alg.moves.last?.slice == .D {
                 if setup.post.moves[setupCancelIndex].inverse == alg.moves.last {
+                    canceledMoves.moves.append(setup.post.moves[setupCancelIndex]) // laterDO this may be in the wrong order
                     setup.post.moves.remove(at: setupCancelIndex)
                     alg.moves.removeLast()
                 } else {
@@ -62,6 +65,7 @@ class TrainingCase {
             }
         }
         
+        self.canceledMoves = canceledMoves
         self.setup = setup
         self.pre = pre
         self.alg = alg
@@ -118,14 +122,19 @@ class TrainingCase {
         
         cube.exec(postScramble)
         cube.scramble(setup.post)
+        
+        // included canceled moves for correct highlighting
+        cube.scramble(canceledMoves)
         for (position, highlight) in base.highlights {
-            Cube.main.pieces[position.rawValue].highlights = highlight
+            cube.pieces[position.rawValue].highlights = highlight
         }
+        cube.exec(canceledMoves)
+        
         cube.scramble(post)
         cube.scramble(alg)
         cube.scramble(pre)
         cube.scramble(setup.pre)
-        Cube.main.update.toggle()
+        cube.update.toggle()
     }
     
     func processInput(_ inputChr: Character) {
@@ -175,14 +184,19 @@ class TrainingCase {
         
         cube.exec(postScramble)
         cube.scramble(setup.post)
+        
+        // included canceled moves for correct highlighting
+        cube.scramble(canceledMoves)
         for (position, highlight) in base.highlights {
-            Cube.main.pieces[position.rawValue].highlights = highlight
+            cube.pieces[position.rawValue].highlights = highlight
         }
+        cube.exec(canceledMoves)
+        
         cube.scramble(post)
         cube.scramble(alg)
         cube.scramble(pre)
         cube.scramble(setup.pre)
-        Cube.main.update.toggle()
+        cube.update.toggle()
     }
 }
 
