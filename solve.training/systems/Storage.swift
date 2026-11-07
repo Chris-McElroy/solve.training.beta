@@ -23,6 +23,7 @@ let methods: [Method] = [
         ],
         // laterDO make .U2 move shortcut and alg shortcut for postmoves alg
         cases: [
+            // a
             Case(name: "aa-p", step: "c2", group: "aa", status: .learned,
                  alg: Alg("R' D' R U' R' D R")!, postmoves: Alg("U'")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
@@ -49,17 +50,31 @@ let methods: [Method] = [
                  alg: Alg("R F' r' U D R' D' R U' M' F")!, postmoves: Alg("U2")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
             
-            Case(name: "ad-p", step: "c2", group: "ad", status: .memorizing,
-                 alg: Alg("D' r U2 r' D L D' F2' D L'")!, postmoves: Alg("U2")!,
+            Case(name: "ad-p", step: "c2", group: "ad", status: .training,
+                 alg: Alg("D' r U2' r' D L D' F2' D L'")!, postmoves: Alg("U2")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
             Case(name: "ad-o", step: "c2", group: "ad", status: .learned,
                  alg: Alg("x' R U' R' D' R U R' D x")!, postmoves: Alg(),
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
-            Case(name: "ad-c", step: "c2", group: "ad", status: .memorizing,
+            Case(name: "ad-c", step: "c2", group: "ad", status: .training,
                  alg: Alg("R2 U' r' F R2' x U' L")!, postmoves: Alg(),
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
-            Case(name: "ad-s", step: "c2", group: "ad", status: .memorizing,
-                 alg: Alg("R' U' R2 U' R2 U2 R U2 R U R'")!, postmoves: Alg("U2")!,
+            Case(name: "ad-s", step: "c2", group: "ad", status: .training,
+                 alg: Alg("R' U' R2 U' R2' U2' R U2 R U R'")!, postmoves: Alg("U2")!,
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            
+            // s
+            Case(name: "sa-p", step: "c2", group: "sa", status: .memorizing,
+                 alg: Alg("r' F r D' r' F2 r D r' F r")!, postmoves: Alg("U2")!,
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sa-o", step: "c2", group: "sa", status: .memorizing,
+                 alg: Alg("R U2 R D R' U R D' R' U R'")!, postmoves: Alg("U'")!,
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sa-c", step: "c2", group: "sa", status: .memorizing,
+                 alg: Alg("R U R D R' U2 R D' R' U R'")!, postmoves: Alg("U'")!,
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sa-s", step: "c2", group: "sa", status: .memorizing,
+                 alg: Alg("R' D' R U' M' F R F' r' D")!, postmoves: Alg("U'")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
 
             Case(name: "ss-p", step: "c2", group: "ss", status: .learned,
@@ -74,7 +89,22 @@ let methods: [Method] = [
             Case(name: "ss-s", step: "c2", group: "ss", status: .training,
                  alg: Alg("M2' U2' r U r' U2' M2' U2' r U r'")!, postmoves: Alg(),
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            
+            Case(name: "sd-p", step: "c2", group: "sd", status: .unknown,
+                 alg: Alg("B r' D r B r' D' r B2")!, postmoves: Alg(),
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sd-o", step: "c2", group: "sd", status: .learned,
+                 alg: Alg("R' F R U R U' R' F' R U R'")!, postmoves: Alg(),
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sd-c", step: "c2", group: "sd", status: .unknown,
+                 alg: Alg("R' F2 R D' R' D F2 D' R D")!, postmoves: Alg("U")!,
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
+            Case(name: "sd-s", step: "c2", group: "sd", status: .unknown,
+                 alg: Alg("R U' R' U' r' F' r2 F U2 F' r'")!, postmoves: Alg(),
+                 setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
 
+            
+            // u
             Case(name: "us-p", step: "c2", group: "us", status: .training,
                  alg: Alg("D' R' D F2 D' R D R' F2 R")!, postmoves: Alg("U2")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
