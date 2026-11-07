@@ -14,7 +14,7 @@ class Manager: ObservableObject {
     @Published var view: ViewOptions = .freeCube
     @Published var trainingEndCard: Bool = false
     
-    @Published var cases: [Case] = methods.first!.cases.filter({ $0.status == .unknown })
+    @Published var cases: [Case] = methods[1].cases
     @Published var currentCase: TrainingCase? = nil
     @Published var currentCaseIndex: Int? = nil
     
@@ -26,6 +26,11 @@ class Manager: ObservableObject {
     @Published var completedText: String = ""
     @Published var currentText: String = ""
     @Published var upcomingText: String = ""
+    
+    @Published var mistake: Bool = false
+    @Published var success: Bool = true
+    @Published var started: Bool = false
+    @Published var finished: Bool = false
     
     var cubeView = CubeView()
     
@@ -55,7 +60,7 @@ class Manager: ObservableObject {
         
         currentCase?.processInput(key.characters.first ?? " ")
         
-        if currentCase?.finished ?? false {
+        if finished {
             Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
                 self.newCase()
             })
@@ -83,7 +88,7 @@ class Manager: ObservableObject {
         
         if let currentCaseIndex {
             casesDone += 1
-            if currentCase?.success ?? false {
+            if success {
                 successfulCases += 1
             }
             
@@ -104,6 +109,10 @@ class Manager: ObservableObject {
         }
         
         currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
+        mistake = false
+        success = true
+        started = false
+        finished = false
         
         switch currentCase?.base.status ?? .unknown {
         case .unknown, .memorizing: trainingMode = .learning

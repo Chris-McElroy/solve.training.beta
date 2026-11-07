@@ -23,5 +23,8 @@ struct FreeCubeView: View {
         }
         .padding(.all)
         .background(.black)
+        .onAppear {
+            Cube.main.exec(Move(.x, .c1))
+        }
     }
 }

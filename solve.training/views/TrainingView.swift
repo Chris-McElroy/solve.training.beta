@@ -14,7 +14,7 @@ struct TrainingView: View {
         ZStack {
             manager.cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
                 .frame(width: 800, height: 800)
-                .opacity(!(manager.currentCase?.started ?? false) || (manager.trainingMode != .noCube) || (manager.currentCase?.mistake ?? false) ? 1 : 0)
+                .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (manager.mistake) ? 1 : 0)
             VStack {
                 Spacer()
                 Text(manager.currentCase?.base.name ?? "")
@@ -27,8 +27,8 @@ struct TrainingView: View {
                     Text(manager.completedText)
                         .foregroundStyle(.green)
                     Text(manager.currentText)
-                        .foregroundStyle((manager.currentCase?.mistake ?? false) ? .red : .white)
-                        .opacity((manager.trainingMode == .learning) || (manager.currentCase?.mistake ?? false) ? 1 : 0)
+                        .foregroundStyle((manager.mistake) ? .red : .white)
+                        .opacity((manager.trainingMode == .learning) || (manager.mistake) ? 1 : 0)
                     Text(manager.upcomingText)
                         .foregroundStyle(.tertiary)
                         .opacity((manager.trainingMode == .learning) ? 1 : 0)

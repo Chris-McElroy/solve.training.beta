@@ -19,14 +19,9 @@ class TrainingCase: Equatable {
     let postScramble: [[Position: Shift]]
     
     let moveInputs: [MoveInput]
-    
     private var progress: Int = 0
-    private let textBits: [String]
     
-    var mistake: Bool = false
-    var success: Bool = true
-    var started: Bool = false
-    var finished: Bool = false
+    private let textBits: [String]
     
     let cube = Cube.main
     
@@ -135,7 +130,7 @@ class TrainingCase: Equatable {
     }
     
     func processInput(_ inputChr: Character) {
-        guard !finished else { return }
+        guard !Manager.main.finished else { return }
         
         if inputChr == " " {
             cube.transparent.toggle()
@@ -144,31 +139,31 @@ class TrainingCase: Equatable {
         }
         
         guard moveInputs[progress].inputChr.contains(inputChr) else {
-            mistake = true
-            success = false
+            Manager.main.mistake = true
+            Manager.main.success = false
             return
         }
-        mistake = false
+        Manager.main.mistake = false
         Cube.main.exec(moveInputs[progress].move)
         Cube.main.update.toggle()
         progress += 1
-        started = true
+        Manager.main.started = true
         
         Manager.main.completedText = textBits.dropLast(textBits.count - progress).joined()
         Manager.main.currentText = progress < textBits.count ? textBits[progress] : ""
         Manager.main.upcomingText = progress < textBits.count ? textBits.dropFirst(progress + 1).joined() : ""
         
         if progress == textBits.count {
-            finished = true
+            Manager.main.finished = true
         }
     }
     
     func reset() {
         progress = 0
-        mistake = false
-        success = true
-        started = false
-        finished = false
+        Manager.main.mistake = false
+        Manager.main.success = true
+        Manager.main.started = false
+        Manager.main.finished = false
         
         Manager.main.completedText = ""
         Manager.main.currentText = textBits[0]

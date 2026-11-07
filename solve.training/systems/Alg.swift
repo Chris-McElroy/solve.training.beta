@@ -85,6 +85,7 @@ struct Move: Hashable {
     }
     
     static let myOrientations: [[Move?]] = [
+        [Move(.x, .c1)],
         [nil, Move(.y, .c1), Move(.y, .c2), Move(.y, .p1)],
         [nil, Move(.x, .c2)],
     ]
