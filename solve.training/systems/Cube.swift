@@ -48,6 +48,12 @@ class Cube: ObservableObject {
         }
     }
     
+    func exec(from input: Character) {
+        guard let move = MoveInput.inputDict[input] else { return }
+        Cube.main.exec(move)
+        Cube.main.update.toggle()
+    }
+    
     func undo(_ move: Move) {
         exec(move.inverse)
     }
@@ -62,6 +68,10 @@ class Cube: ObservableObject {
         pieces = Cube.solvedPieces
         transparent = false
         self.right = right
+    }
+    
+    func solved() -> Bool {
+        pieces == Cube.solvedPieces
     }
 }
 
@@ -182,7 +192,7 @@ struct Facelet: Hashable {
     }
 }
 
-struct Piece {
+struct Piece: Equatable {
     let position: Position
     var orientation: Int {
         get {

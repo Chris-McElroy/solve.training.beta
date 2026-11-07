@@ -5,9 +5,9 @@
 //  Created by chris on '26.10.16.
 //
 
-import Foundation
+import SwiftUI
 
-class TrainingCase {
+class TrainingCase: Equatable {
     let base: Case
     
     let orientations: [Move]
@@ -22,9 +22,6 @@ class TrainingCase {
     
     private var progress: Int = 0
     private let textBits: [String]
-    var completedText: String
-    var currentText: String
-    var upcomingText: String
     
     var mistake: Bool = false
     var success: Bool = true
@@ -105,9 +102,9 @@ class TrainingCase {
         self.textBits = text
         self.moveInputs = moveInputs
         
-        completedText = ""
-        currentText = textBits[0]
-        upcomingText = textBits.dropFirst().joined()
+        Manager.main.completedText = ""
+        Manager.main.currentText = textBits[0]
+        Manager.main.upcomingText = textBits.dropFirst().joined()
         
         cube.reset(right: setup.right)
         
@@ -157,9 +154,9 @@ class TrainingCase {
         progress += 1
         started = true
         
-        completedText = textBits.dropLast(textBits.count - progress).joined()
-        currentText = progress < textBits.count ? textBits[progress] : ""
-        upcomingText = progress < textBits.count ? textBits.dropFirst(progress + 1).joined() : ""
+        Manager.main.completedText = textBits.dropLast(textBits.count - progress).joined()
+        Manager.main.currentText = progress < textBits.count ? textBits[progress] : ""
+        Manager.main.upcomingText = progress < textBits.count ? textBits.dropFirst(progress + 1).joined() : ""
         
         if progress == textBits.count {
             finished = true
@@ -173,9 +170,9 @@ class TrainingCase {
         started = false
         finished = false
         
-        completedText = ""
-        currentText = textBits[0]
-        upcomingText = textBits.dropFirst().joined()
+        Manager.main.completedText = ""
+        Manager.main.currentText = textBits[0]
+        Manager.main.upcomingText = textBits.dropFirst().joined()
         
         cube.reset(right: setup.right)
         for orientation in orientations {
@@ -197,6 +194,19 @@ class TrainingCase {
         cube.scramble(pre)
         cube.scramble(setup.pre)
         cube.update.toggle()
+    }
+    
+    static func == (lhs: TrainingCase, rhs: TrainingCase) -> Bool {
+        return lhs.base.step == rhs.base.step &&
+        lhs.base.group == rhs.base.group &&
+        lhs.base.name == rhs.base.name &&
+        lhs.orientations == rhs.orientations &&
+        lhs.canceledMoves == rhs.canceledMoves &&
+        lhs.setup == rhs.setup &&
+        lhs.pre == rhs.pre &&
+        lhs.alg == rhs.alg &&
+        lhs.post == rhs.post &&
+        lhs.postScramble == rhs.postScramble
     }
 }
 
@@ -236,7 +246,7 @@ struct MoveInput {
         case .U: return turn.c ? "j" : "f"
         case .D: return turn.c ? "so" : "lw"
         case .F: return turn.c ? "h" : "g"
-        case .B: return turn.c ? "t" : "y"
+        case .B: return turn.c ? "y" : "u"
         case .R: return turn.c ? "i" : "k"
         case .L: return turn.c ? "d" : "e"
             
@@ -245,7 +255,7 @@ struct MoveInput {
         case .r: return turn.c ? "I" : "K"
         case .l: return turn.c ? "D" : "E"
         case .f: return turn.c ? "H" : "G"
-        case .b: return turn.c ? "T" : "Y"
+        case .b: return turn.c ? "Y" : "U"
             
         case .M: return turn.c ? "z." : "x'"
         case .S: return turn.c ? "n" : "b"
@@ -253,7 +263,7 @@ struct MoveInput {
             
         case .x: return turn.c ? "r" : "v"
         case .y: return turn.c ? ";p" : "aq"
-        case .z: return turn.c ? "u" : "m"
+        case .z: return turn.c ? "m" : "t"
         }
     }
     
@@ -269,8 +279,8 @@ struct MoveInput {
         "h": Move(.F, .c1),
         "g": Move(.F, .p1),
         
-        "t": Move(.B, .c1),
-        "y": Move(.B, .p1),
+        "y": Move(.B, .c1),
+        "u": Move(.B, .p1),
         
         "i": Move(.R, .c1),
         "k": Move(.R, .p1),
@@ -291,8 +301,8 @@ struct MoveInput {
         "H": Move(.f, .c1),
         "G": Move(.f, .p1),
         
-        "T": Move(.b, .c1),
-        "Y": Move(.b, .p1),
+        "Y": Move(.b, .c1),
+        "U": Move(.b, .p1),
         
         "I": Move(.r, .c1),
         "K": Move(.r, .p1),
@@ -323,8 +333,8 @@ struct MoveInput {
         "a": Move(.y, .p1),
         "q": Move(.y, .p1),
         
-        "u": Move(.z, .c1),
-        "m": Move(.z, .p1),
+        "m": Move(.z, .c1),
+        "t": Move(.z, .p1),
     ]
 }
 

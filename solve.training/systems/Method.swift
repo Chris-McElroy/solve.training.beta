@@ -33,7 +33,7 @@ struct Group {
     let color: Color
 }
 
-struct Setup {
+struct Setup: Equatable {
     var pre: Alg
     var post: Alg
     var right: Bool

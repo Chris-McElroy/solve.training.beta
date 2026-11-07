@@ -8,10 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var cases: [Case] = methods.first!.cases.filter({ $0.status == .memorizing })
-    
     var body: some View {
-        TrainingView(cases: cases)
+        VStack {
+            if Manager.main.view == .training {
+                TrainingView()
+            } else if Manager.main.view == .freeCube {
+                FreeCubeView()
+            }
+        }
+        .focusable()
+        .onKeyPress { key in
+            DispatchQueue.main.async { // wait till next event cycle
+                Manager.main.keyPressed(key)
+            }
+            return .handled
+        }
     }
 }
 

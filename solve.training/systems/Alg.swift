@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Alg {
+struct Alg: Equatable {
     var moves: [Move]
     
     init(_ moves: [Move] = []) {
