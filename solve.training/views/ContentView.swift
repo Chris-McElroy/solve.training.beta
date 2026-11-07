@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var manager = Manager.main
+    
     var body: some View {
         VStack {
-            if Manager.main.view == .training {
+            if manager.view == .training {
                 TrainingView()
-            } else if Manager.main.view == .freeCube {
+            } else if manager.view == .freeCube {
                 FreeCubeView()
             }
         }

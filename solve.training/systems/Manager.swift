@@ -36,7 +36,6 @@ class Manager: ObservableObject {
                 Cube.main.update.toggle()
             } else if key.key == .return {
                 view = .training
-                startNewTraining()
                 return
             } else if let input = key.characters.first {
                 Cube.main.exec(from: input)
@@ -49,6 +48,7 @@ class Manager: ObservableObject {
                 startNewTraining()
             } else if key.key == .return {
                 view = .freeCube
+                Cube.main.reset(right: true)
             }
             return
         }
