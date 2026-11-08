@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 import RealityKit
 
 struct CubeView: View {
@@ -153,7 +154,7 @@ class FaceletView {
         back?.model?.materials = [material]
     }
     
-    static func color(of facelet: Facelet, face: Face, highlight: Bool) -> NSColor {
+    static func color(of facelet: Facelet, face: Face, highlight: Bool) -> UIColor {
         let faceColor = Cube.main.face(of: facelet)
         var alpha: CGFloat = 1
         if face == .D || face == .B || face == (Cube.main.right ? .L : .R) {

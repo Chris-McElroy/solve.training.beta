@@ -34,34 +34,34 @@ class Manager: ObservableObject {
     
     var cubeView = CubeView()
     
-    func keyPressed(_ key: KeyPress) {
+    func process(_ input: Character) {
         if view == .freeCube {
-            if key.key == .space {
+            if input == " " {
                 Cube.main.right.toggle()
                 Cube.main.update.toggle()
-            } else if key.key == .return {
+            } else if input == "\n" {
                 view = .training
                 return
-            } else if let input = key.characters.first {
+            } else {
                 Cube.main.exec(from: input)
             }
             return
         }
         
-        if key.key == .return {
+        if input == "\n" {
             view = .freeCube
             Cube.main.reset(right: true)
             return
         }
         
         if trainingEndCard {
-            if key.key == .space {
+            if input == " " {
                 startNewTraining()
             }
             return
         }
         
-        currentCase?.processInput(key.characters.first ?? " ")
+        currentCase?.processInput(input)
         
         if finished {
             Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
