@@ -241,7 +241,7 @@ struct PostScramble {
                     }
                 } else if remainingConstraints.isEmpty {
                     // TODO deal with this
-                } else if let options = remainingConstraints.first!.options[piece1] {
+//                } else if let options = remainingConstraints.first!.options[piece1] {
                     // TODO deal with this
                 } else {
                     print("out of options! id code a572", unsolvedCorners, cornerConstraints)
