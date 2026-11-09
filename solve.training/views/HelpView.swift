@@ -12,17 +12,18 @@ struct HelpView: View {
     
     var body: some View {
         ZStack {
-            
             HStack(spacing: 0) {
                 VStack(spacing: 0) {
                     Spacer()
                     VStack(spacing: 7) {
+                        Spacer()
                         Text("space to toggle\nenter to exit\ntab to reset\nclick here for button info")
                             .font(.custom("Rubik", size: 20))
                             .lineSpacing(7)
                             .multilineTextAlignment(.leading)
+                        Spacer().frame(height: 10)
                     }
-                    .frame(width: 300, height: 200)
+                    .frame(width: 300, height: 150)
                     .background(.black)
                     .onTapGesture {
                         showHelp = true

@@ -12,16 +12,27 @@ struct TrainingView: View {
     
     var body: some View {
         ZStack {
-            manager.cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
-                .frame(width: 800, height: 800)
-                .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (manager.mistake) ? 1 : 0)
-            VStack {
+            HStack {
                 Spacer()
+                VStack {
+                    Spacer()
+                    manager.cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
+                        .frame(maxWidth: 800, maxHeight: 800)
+                        .scaledToFit()
+                        .minimumScaleFactor(0.01)
+                        .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (manager.mistake) ? 1 : 0)
+                    Spacer()
+                }
+                Spacer()
+            }
+            VStack {
+                Spacer().frame(minHeight: 200)
                 Text(manager.currentCase?.base.name ?? "")
+                    .frame(minWidth: 300, maxWidth: 500, minHeight: 25, maxHeight: 150)
                     .scaledToFit()
                     .font(.custom("Rubik-Bold", size: 100))
                     .opacity((manager.trainingMode == .learning) ? 1 : 0)
-                Spacer().frame(height: 500)
+                Spacer().frame(height: 400)
                 HStack(spacing: 0) {
                     Spacer()
                     Text(manager.completedText)
@@ -34,10 +45,12 @@ struct TrainingView: View {
                         .opacity((manager.trainingMode == .learning) ? 1 : 0)
                     Spacer()
                 }
-                .scaledToFit()
                 .font(.custom("Rubik-Regular", size: 80))
+                .frame(minHeight: 25)
                 Spacer()
+                    .frame(minHeight: 200)
             }
+            .scaledToFit()
             .minimumScaleFactor(0.01)
             .lineLimit(1)
             if manager.trainingEndCard {

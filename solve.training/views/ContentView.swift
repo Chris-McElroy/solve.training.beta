@@ -45,9 +45,10 @@ struct ContentView: View {
         }
         #if os(macOS)
         .focusable()
+        .focusEffectDisabled()
         .onKeyPress { key in
             DispatchQueue.main.async { // wait till next event cycle
-                Manager.main.process(key.characters.first ?? " ")
+                Manager.main.process(input: key)
             }
             return .handled
         }

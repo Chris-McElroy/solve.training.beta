@@ -34,6 +34,7 @@ class Manager: ObservableObject {
     
     var cubeView = CubeView()
     
+    #if os(iOS)
     func process(_ input: Character) {
         if view == .freeCube {
             if input == " " {
@@ -71,10 +72,54 @@ class Manager: ObservableObject {
         
         return
     }
+    #endif
+    
+    #if os(macOS)
+    func process(input: KeyPress) {
+        if view == .freeCube {
+            if input.key == .space {
+                Cube.main.right.toggle()
+                Cube.main.update.toggle()
+            } else if input.key == .return {
+                view = .training
+                return
+            } else if let inputChr = input.characters.first {
+                Cube.main.exec(from: inputChr)
+            }
+            return
+        }
+        
+        if input.key == .return {
+            view = .freeCube
+            Cube.main.reset(right: true)
+            return
+        }
+        
+        if trainingEndCard {
+            if input.key == .space {
+                startNewTraining()
+            }
+            return
+        }
+        
+        if let inputChr = input.characters.first {
+            currentCase?.processInput(inputChr)
+        }
+        
+        if finished {
+            Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false, block: { _ in
+                self.newCase()
+            })
+        }
+        
+        return
+    }
+    #endif
     
     func startNewTraining() {
         trainingEndCard = false
         currentCaseIndex = nil
+        currentCase = nil
         newCase()
         startTime = Date().timeIntervalSinceReferenceDate
         casesDone = 0
