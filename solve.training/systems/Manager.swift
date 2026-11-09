@@ -90,6 +90,8 @@ class Manager: ObservableObject {
         }
         
         if let currentCaseIndex {
+//            Storage.
+            
             casesDone += 1
             if success {
                 successfulCases += 1

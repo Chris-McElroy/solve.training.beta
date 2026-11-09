@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
 import RealityKit
 
 struct CubeView: View {
@@ -154,6 +153,7 @@ class FaceletView {
         back?.model?.materials = [material]
     }
     
+    #if os(iOS)
     static func color(of facelet: Facelet, face: Face, highlight: Bool) -> UIColor {
         let faceColor = Cube.main.face(of: facelet)
         var alpha: CGFloat = 1
@@ -175,6 +175,31 @@ class FaceletView {
         case .L: return .orange.withAlphaComponent(alpha)
         }
     }
+    #endif
+    
+    #if os(macOS)
+    static func color(of facelet: Facelet, face: Face, highlight: Bool) -> NSColor {
+        let faceColor = Cube.main.face(of: facelet)
+        var alpha: CGFloat = 1
+        if face == .D || face == .B || face == (Cube.main.right ? .L : .R) {
+            alpha = 0.85
+        }
+        if Cube.main.transparent {
+            if !highlight {
+                alpha = 0
+            }
+        }
+        
+        switch faceColor {
+        case .U: return .yellow.withAlphaComponent(alpha)
+        case .D: return .white.withAlphaComponent(alpha)
+        case .F: return .blue.withAlphaComponent(alpha)
+        case .B: return .green.withAlphaComponent(alpha)
+        case .R: return .red.withAlphaComponent(alpha)
+        case .L: return .orange.withAlphaComponent(alpha)
+        }
+    }
+    #endif
 }
 
 extension ModelEntity {

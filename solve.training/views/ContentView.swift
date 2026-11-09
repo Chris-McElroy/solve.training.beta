@@ -9,12 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var manager = Manager.main
-    @State var input: String = ""
     
+    
+    #if os(iOS)
+    @State var input: String = ""
     @FocusState var focus: Bool
+    #endif
     
     var body: some View {
         ZStack {
+            #if os(iOS)
             TextEditor(text: $input)
                 .focused($focus)
                 .onAppear {
@@ -31,21 +35,23 @@ struct ContentView: View {
                     
                     Manager.main.process(newInput)
                 }
-            VStack {
-                if manager.view == .training {
-                    TrainingView()
-                } else if manager.view == .freeCube {
-                    FreeCubeView()
-                }
+            #endif
+            if manager.view == .training {
+                TrainingView()
+            } else if manager.view == .freeCube {
+                FreeCubeView()
             }
+            HelpView()
         }
-//        .focusable()
-//        .onKeyPress { key in
-//            DispatchQueue.main.async { // wait till next event cycle
-//                Manager.main.keyPressed(key)
-//            }
-//            return .handled
-//        }
+        #if os(macOS)
+        .focusable()
+        .onKeyPress { key in
+            DispatchQueue.main.async { // wait till next event cycle
+                Manager.main.process(key.characters.first ?? " ")
+            }
+            return .handled
+        }
+        #endif
     }
 }
 

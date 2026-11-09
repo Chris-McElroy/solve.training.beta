@@ -46,6 +46,7 @@ struct Setup: Equatable {
 }
 
 class Case {
+    var ID: String
     var name: String
     var step: String
     var group: String
@@ -62,7 +63,8 @@ class Case {
     
     var stats: [CaseStatus: CaseStats]
     
-    init(name: String,
+    init(ID: String,
+         name: String,
          step: String,
          group: String,
          status: CaseStatus = .unknown,
@@ -77,6 +79,8 @@ class Case {
          altAlgs: [Alg] = [],
          
          stats: [CaseStatus : CaseStats] = [:]) {
+        
+        self.ID = ID
         
         self.name = name
         self.step = step
