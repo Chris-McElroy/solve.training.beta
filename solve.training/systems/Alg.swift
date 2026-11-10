@@ -85,7 +85,7 @@ struct Move: Hashable {
     }
     
     static let myOrientations: [[Move?]] = [
-//        [Move(.x, .c1)], // for Tim
+        [Move(.x, .c1)], // forTim
         [nil, Move(.y, .c1), Move(.y, .c2), Move(.y, .p1)],
         [nil, Move(.x, .c2)],
     ]
@@ -225,7 +225,8 @@ struct MoveInput {
         case .f: return turn.c ? "H" : "G"
         case .b: return turn.c ? "Y" : "U"
             
-        case .M: return turn.c ? "z." : "x'"
+//        case .M: return turn.c ? "z." : "x'" // forChris
+        case .M: return turn.c ? "z/" : "x." // forTim
         case .S: return turn.c ? "n" : "b"
         case .E: return turn.c ? "c" : ","
             
@@ -281,9 +282,11 @@ struct MoveInput {
         
         
         "z": Move(.M, .c1),
-        ".": Move(.M, .c1),
+//        ".": Move(.M, .c1), // forChris
+        "/": Move(.M, .c1), // forTim
         "x": Move(.M, .p1),
-        "'": Move(.M, .p1),
+//        "'": Move(.M, .p1), // forChris
+        ".": Move(.M, .p1), // forTim
         
         "n": Move(.S, .c1),
         "b": Move(.S, .p1),

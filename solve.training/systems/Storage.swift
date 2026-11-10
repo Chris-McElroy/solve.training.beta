@@ -203,17 +203,17 @@ let methods: [Method] = [
         cases: [
             // edges
             Case(ID: "Ua1", name: "Ua", step: "pll", group: "U", status: .memorizing,
-                 premoves: nearAUFs, alg: Alg("M2' U M U2 M' U M2'")!,
+                 premoves: [], alg: Alg("M2' U M U2 M' U M2'")!,
                  setup: pllSetup, highlights: pllHighlights),
             Case(ID: "Ua2", name: "Ua", step: "pll", group: "U", status: .memorizing,
-                 premoves: [], alg: Alg("M2' U M' U2 M U M2'")!,
+                 premoves: nearAUFs, alg: Alg("R U R' U R' U' R2 U' R' U R' U R")!,
                  setup: pllSetup, highlights: pllHighlights),
             Case(ID: "Ub1", name: "Ub", step: "pll", group: "U", status: .memorizing,
-                 premoves: nearAUFs, alg: Alg("M2' U' M U2 M' U' M2'")!,
+                 premoves: [], alg: Alg("M2' U' M U2 M' U' M2'")!,
                  setup: pllSetup, highlights: pllHighlights),
             Case(ID: "Ub2", name: "Ub", step: "pll", group: "U", status: .memorizing,
-                 premoves: [], alg: Alg("M2' U' M' U2' M U' M2'")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 premoves: nearAUFs, alg: Alg("L' U' L U' L U L2' U L U' L U' L'")!,
+                 setup: pllLeftySetup, highlights: pllHighlights),
             
             Case(ID: "H", name: "H", step: "pll", group: "H", status: .learned,
                  premoves: [], alg: Alg("M2' U M2' U2 M2' U M2'")!,
@@ -226,10 +226,10 @@ let methods: [Method] = [
             // corners
             Case(ID: "Aa1", name: "Aa", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x L2 D2' L' U' L D2' L' U L' x'")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 setup: pllLeftySetup, highlights: pllHighlights),
             Case(ID: "Aa2", name: "Aa", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x' L' U L' D2' L U' L' D2' L2 x")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 setup: pllLeftySetup, highlights: pllHighlights),
             Case(ID: "Aa3", name: "Aa", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x R' U R' D2 R U' R' D2 R2 x'")!,
                  setup: pllSetup, highlights: pllHighlights),
@@ -238,10 +238,10 @@ let methods: [Method] = [
                  setup: pllSetup, highlights: pllHighlights),
             Case(ID: "Ab1", name: "Ab", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x L U' L D2' L' U L D2' L2' x'")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 setup: pllLeftySetup, highlights: pllHighlights),
             Case(ID: "Ab2", name: "Ab", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x' L2' D2' L U L' D2' L U' L x")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 setup: pllLeftySetup, highlights: pllHighlights),
             Case(ID: "Ab3", name: "Ab", step: "pll", group: "A", status: .training,
                  premoves: [], alg: Alg("x' R U' R D2 R' U R D2 R2' x")!,
                  setup: pllSetup, highlights: pllHighlights),
@@ -267,8 +267,8 @@ let methods: [Method] = [
                  setup: pllSetup, highlights: pllHighlights),
             
             Case(ID: "Ja", name: "Ja", step: "pll", group: "J", status: .training,
-                 alg: Alg("x R2 F R F' R U2 r' U r U2 x'")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 alg: Alg("L' U' L F L' U' L U L F' L2' U L")!,
+                 setup: pllLeftySetup, highlights: pllHighlights),
             
             Case(ID: "Ra", name: "Ra", step: "pll", group: "R", status: .training,
                  alg: Alg("R U' R' U' R U R D R' U' R D' R' U2 R'")!,
@@ -289,8 +289,8 @@ let methods: [Method] = [
                  alg: Alg("R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'")!,
                  setup: pllSetup, highlights: pllHighlights),
             Case(ID: "Nb", name: "Nb", step: "pll", group: "N", status: .training,
-                 alg: Alg("r' D' F r U' r' F' D r2 U r' U' r' F r F'")!,
-                 setup: pllSetup, highlights: pllHighlights),
+                 alg: Alg("L' U' L U' L' U' L F L' U' L U L F' L2' U L U2' L' U L")!,
+                 setup: pllLeftySetup, highlights: pllHighlights),
             
             Case(ID: "Ga", name: "Ga", step: "pll", group: "G", status: .memorizing,
                  alg: Alg("R2 U R' U R' U' R U' R2 U' D R' U R D'")!,
@@ -321,6 +321,7 @@ let pllHighlights: [Position: [Int]] = [.UFR: [1, 2], .UFL: [1, 2], .UBR: [1, 2]
 let c2Setup: [Setup] = [Setup()] // , Setup(pre: Alg("D")!, post: Alg("D'")!, right: false)]
 
 let pllSetup: [Setup] = [Setup(), Setup(post: Alg("U")!), Setup(post: Alg("U2")!), Setup(post: Alg("U'")!)]
+let pllLeftySetup: [Setup] = [Setup(right: false), Setup(post: Alg("U")!, right: false), Setup(post: Alg("U2")!, right: false), Setup(post: Alg("U'")!, right: false)]
 
 let c2PostScramble: PostScramble = PostScramble(unsolvedCorners: [.UFL, .UFR, .UBR], algOptions: Alg.AUFs)
 

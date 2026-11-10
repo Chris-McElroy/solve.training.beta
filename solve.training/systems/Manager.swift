@@ -14,7 +14,7 @@ class Manager: ObservableObject {
     @Published var view: ViewOptions = .freeCube
     @Published var trainingEndCard: Bool = false
     
-    @Published var cases: [Case] = methods[0].cases.filter { $0.status == .memorizing }
+    @Published var cases: [Case] = methods[1].cases //.filter { $0.status == .memorizing }
     @Published var currentCase: TrainingCase? = nil
     @Published var currentCaseIndex: Int? = nil
     
