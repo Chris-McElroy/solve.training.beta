@@ -14,7 +14,8 @@ class Manager: ObservableObject {
     @Published var view: ViewOptions = .freeCube
     @Published var trainingEndCard: Bool = false
     
-    @Published var cases: [Case] = methods[0].cases.filter { $0.status == .training }
+    @Published var cases: [Case] = methods[0].cases // forChris
+//    @Published var cases: [Case] = methods[1].cases // forTim
     @Published var currentCase: TrainingCase? = nil
     @Published var currentCaseIndex: Int? = nil
     
@@ -137,8 +138,6 @@ class Manager: ObservableObject {
 //            return
 //        }
         
-        
-        
         if let currentCaseIndex {
             //            Storage.
             
@@ -199,17 +198,6 @@ class Manager: ObservableObject {
             
             currentCaseIndex = (0..<cases.count).randomElement() ?? 0
             currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
-        }
-        
-        mistake = false
-        success = true
-        started = false
-        finished = false
-        
-        switch currentCase?.base.status ?? .unknown {
-        case .unknown, .memorizing: trainingMode = .learning
-        case .training: trainingMode = .noAlg
-        case .learned: trainingMode = .noCube
         }
     }
 }

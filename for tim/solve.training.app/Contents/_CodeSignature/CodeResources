@@ -92,7 +92,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			pRn0TeAvaSmvdt8BTeXuWCGxQwg=
+			tjk/+HeuoVu2DvMC9TW1Eqrdauw=
 			</data>
 			<key>requirement</key>
 			<string>identifier "solve.training.debug" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: Christopher McElroy (L3YW8QH45B)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>

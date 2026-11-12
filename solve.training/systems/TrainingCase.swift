@@ -127,6 +127,17 @@ class TrainingCase: Equatable {
         cube.scramble(pre)
         cube.scramble(setup.pre)
         cube.update.toggle()
+        
+        Manager.main.mistake = false
+        Manager.main.success = true
+        Manager.main.started = false
+        Manager.main.finished = false
+        
+        switch base.status {
+        case .unknown, .memorizing: Manager.main.trainingMode = .learning
+        case .training: Manager.main.trainingMode = .noAlg
+        case .learned: Manager.main.trainingMode = .noCube
+        }
     }
     
     func processInput(_ inputChr: Character) {
@@ -161,10 +172,6 @@ class TrainingCase: Equatable {
     
     func reset() {
         progress = 0
-        Manager.main.mistake = false
-        Manager.main.success = true
-        Manager.main.started = false
-        Manager.main.finished = false
         
         Manager.main.completedText = ""
         Manager.main.currentText = textBits[0]
@@ -190,6 +197,17 @@ class TrainingCase: Equatable {
         cube.scramble(pre)
         cube.scramble(setup.pre)
         cube.update.toggle()
+        
+        Manager.main.mistake = false
+        Manager.main.success = true
+        Manager.main.started = false
+        Manager.main.finished = false
+        
+        switch base.status {
+        case .unknown, .memorizing: Manager.main.trainingMode = .learning
+        case .training: Manager.main.trainingMode = .noAlg
+        case .learned: Manager.main.trainingMode = .noCube
+        }
     }
     
     static func == (lhs: TrainingCase, rhs: TrainingCase) -> Bool {
