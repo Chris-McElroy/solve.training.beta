@@ -131,6 +131,7 @@ class TrainingCase: Equatable {
     
     func processInput(_ inputChr: Character) {
         guard !Manager.main.finished else { return }
+        guard progress < moveInputs.count else { return }
         
         if inputChr == " " {
             cube.transparent.toggle()

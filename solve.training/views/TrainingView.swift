@@ -20,7 +20,7 @@ struct TrainingView: View {
                         .frame(maxWidth: 800, maxHeight: 800)
                         .scaledToFit()
                         .minimumScaleFactor(0.01)
-                        .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (manager.mistake) ? 1 : 0)
+                        .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (!manager.success) ? 1 : 0)
                     Spacer()
                 }
                 Spacer()
@@ -31,7 +31,7 @@ struct TrainingView: View {
                     .frame(minWidth: 300, maxWidth: 500, minHeight: 25, maxHeight: 150)
                     .scaledToFit()
                     .font(.custom("Rubik-Bold", size: 100))
-                    .opacity((manager.trainingMode == .learning) ? 1 : 0)
+                    .opacity((manager.trainingMode == .learning || !manager.success) ? 1 : 0)
                 Spacer().frame(height: 400)
                 HStack(spacing: 0) {
                     Spacer()
@@ -39,10 +39,10 @@ struct TrainingView: View {
                         .foregroundStyle(.green)
                     Text(manager.currentText)
                         .foregroundStyle((manager.mistake) ? .red : .white)
-                        .opacity((manager.trainingMode == .learning) || (manager.mistake) ? 1 : 0)
+                        .opacity((manager.trainingMode == .learning) || (!manager.success) ? 1 : 0)
                     Text(manager.upcomingText)
                         .foregroundStyle(.tertiary)
-                        .opacity((manager.trainingMode == .learning) ? 1 : 0)
+                        .opacity((manager.trainingMode == .learning || (!manager.success)) ? 1 : 0)
                     Spacer()
                 }
                 .font(.custom("Rubik-Regular", size: 80))

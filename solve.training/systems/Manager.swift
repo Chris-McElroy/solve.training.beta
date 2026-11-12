@@ -14,7 +14,7 @@ class Manager: ObservableObject {
     @Published var view: ViewOptions = .freeCube
     @Published var trainingEndCard: Bool = false
     
-    @Published var cases: [Case] = methods[1].cases //.filter { $0.status == .memorizing }
+    @Published var cases: [Case] = methods[0].cases.filter { $0.status == .training }
     @Published var currentCase: TrainingCase? = nil
     @Published var currentCaseIndex: Int? = nil
     
@@ -31,6 +31,8 @@ class Manager: ObservableObject {
     @Published var success: Bool = true
     @Published var started: Bool = false
     @Published var finished: Bool = false
+    
+    var queue: [(index: Int, case: TrainingCase)?] = [nil]
     
     var cubeView = CubeView()
     
@@ -81,6 +83,7 @@ class Manager: ObservableObject {
                 Cube.main.right.toggle()
                 Cube.main.update.toggle()
             } else if input.key == .return {
+                queue = [nil] // laterDO handle this more cleanly
                 view = .training
                 return
             } else if let inputChr = input.characters.first {
@@ -128,18 +131,25 @@ class Manager: ObservableObject {
     
     
     func newCase() {
-        if currentCase?.base.status == .memorizing && trainingMode == .learning {
-            trainingMode = .noAlg
-            currentCase?.reset()
-            return
-        }
+//        if currentCase?.base.status == .memorizing && trainingMode == .learning {
+//            trainingMode = .noAlg
+//            currentCase?.reset()
+//            return
+//        }
+        
+        
         
         if let currentCaseIndex {
-//            Storage.
+            //            Storage.
             
             casesDone += 1
             if success {
                 successfulCases += 1
+                queue.append(nil)
+//                print("success", queue.count, queue)
+            } else if let currentCase {
+                queue.append((index: currentCaseIndex, case: currentCase))
+//                print("error", queue.count, queue)
             }
             
             if Date().timeIntervalSinceReferenceDate - startTime >= 60 {
@@ -147,18 +157,50 @@ class Manager: ObservableObject {
                 return
             }
             
-            if cases.count > 1 {
-                var newIndex = (0..<(cases.count - 1)).randomElement() ?? 0
-                if newIndex >= currentCaseIndex {
-                    newIndex += 1
+            if let nextUp = queue.first as? (index: Int, case: TrainingCase) {
+                self.currentCaseIndex = nextUp.index
+                self.currentCase = nextUp.case
+                self.currentCase?.reset()
+                queue.removeFirst()
+//                print("next up 1", queue.count, queue)
+                return
+            } else {
+                if queue.count > 1 {
+//                    print("removing nil", queue.first as Any? ?? "none!", queue.count, queue)
+                    queue.removeFirst()
+//                    print("removed nil", queue.count, queue)
                 }
-                self.currentCaseIndex = newIndex
+                
+                if cases.count > 1 {
+                    var newIndex = (0..<(cases.count - 1)).randomElement() ?? 0
+                    if newIndex >= currentCaseIndex {
+                        newIndex += 1
+                    }
+                    self.currentCaseIndex = newIndex
+                    self.currentCase = TrainingCase(from: cases[newIndex])
+                } else {
+                    self.currentCaseIndex = 0
+                    self.currentCase = TrainingCase(from: cases[0])
+                }
             }
         } else {
+            // just for starting up with a queue
+            if let nextUp = queue.first as? (index: Int, case: TrainingCase) {
+                self.currentCaseIndex = nextUp.index
+                self.currentCase = nextUp.case
+                self.currentCase?.reset()
+                queue.removeFirst()
+    //            print("next up 2", queue.count, queue)
+                // TODO i ended up with 3 in the queue at some point somehow
+                return
+            } else if queue.count > 1 {
+                queue.removeFirst()
+            }
+            
             currentCaseIndex = (0..<cases.count).randomElement() ?? 0
+            currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
         }
         
-        currentCase = TrainingCase(from: cases[currentCaseIndex ?? 0])
         mistake = false
         success = true
         started = false
