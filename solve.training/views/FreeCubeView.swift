@@ -25,8 +25,10 @@ struct FreeCubeView: View {
         }
         .padding(.all)
         .background(.black)
-//        .onAppear { // forTim
-//            Cube.main.exec(Move(.x, .c1))
-//        }
+        .onAppear {
+            if !chris {
+                Cube.main.exec(Move(.x, .c1))
+            }
+        }
     }
 }

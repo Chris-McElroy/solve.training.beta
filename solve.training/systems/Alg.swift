@@ -84,8 +84,11 @@ struct Move: Hashable {
         hasher.combine(turn)
     }
     
-    static let myOrientations: [[Move?]] = [
-//        [Move(.x, .c1)], // forTim
+    static let myOrientations: [[Move?]] = chris ? [
+        [nil, Move(.y, .c1), Move(.y, .c2), Move(.y, .p1)],
+        [nil, Move(.x, .c2)],
+    ] : [
+        [Move(.x, .c1)],
         [nil, Move(.y, .c1), Move(.y, .c2), Move(.y, .p1)],
         [nil, Move(.x, .c2)],
     ]
@@ -225,8 +228,7 @@ struct MoveInput {
         case .f: return turn.c ? "H" : "G"
         case .b: return turn.c ? "Y" : "U"
             
-        case .M: return turn.c ? "z." : "x'" // forChris
-//        case .M: return turn.c ? "z/" : "x." // forTim
+        case .M: return chris ? (turn.c ? "z." : "x'") : (turn.c ? "z/" : "x.")
         case .S: return turn.c ? "n" : "b"
         case .E: return turn.c ? "c" : ","
             
@@ -282,11 +284,10 @@ struct MoveInput {
         
         
         "z": Move(.M, .c1),
-        ".": Move(.M, .c1), // forChris
-//        "/": Move(.M, .c1), // forTim
+        ".": chris ? Move(.M, .c1) : Move(.M, .p1),
+        "/": Move(.M, .c1), // only for tim
         "x": Move(.M, .p1),
-        "'": Move(.M, .p1), // forChris
-//        ".": Move(.M, .p1), // forTim
+        "'": Move(.M, .p1), // only for chris
         
         "n": Move(.S, .c1),
         "b": Move(.S, .p1),

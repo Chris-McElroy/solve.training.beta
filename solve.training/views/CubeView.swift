@@ -19,6 +19,10 @@ struct CubeView: View {
             // https://stackoverflow.com/questions/78487437/how-can-i-add-a-perspectivecamera-in-realityview-on-visionos-using-realitykit
             
             content.add(center.entity)
+            let camera = PerspectiveCamera()
+            camera.position = SIMD3<Float>(0, 0, 2)
+            camera.camera.fieldOfViewInDegrees = 30
+            content.add(camera)
         } update: { content in
             center.orient()
             
@@ -29,6 +33,7 @@ struct CubeView: View {
                 cubie.update(material: material)
             }
         }
+//        .realityViewLayoutBehavior(.fixedSize)
         .background(.black)
     }
     

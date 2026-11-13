@@ -17,7 +17,7 @@ struct ContentView: View {
     #endif
     
     var body: some View {
-        ZStack {
+        VStack {
             #if os(iOS)
             TextEditor(text: $input)
                 .focused($focus)
@@ -36,6 +36,19 @@ struct ContentView: View {
                     Manager.main.process(newInput)
                 }
             #endif
+            HStack(spacing: 0) {
+                Text("solve.training")
+                    .font(.custom("Rubik", size: 30))
+                Spacer()
+                Image(systemName: "info.circle.fill")
+                    .onTapGesture {
+                        Manager.main.showInfo = true
+                    }
+                Image(systemName: "gearshape.fill")
+            }
+            .frame(height: 30)
+            .padding(.horizontal, 10)
+            .background(.black)
             if manager.view == .training {
                 TrainingView()
             } else if manager.view == .freeCube {

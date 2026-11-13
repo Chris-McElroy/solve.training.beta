@@ -8,35 +8,17 @@
 import SwiftUI
 
 struct HelpView: View {
-    @State var showHelp: Bool = false // laterDO move to manager
+    @ObservedObject var manager = Manager.main
     
     var body: some View {
         ZStack {
-            HStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    Spacer()
-                    VStack(spacing: 7) {
-                        Spacer()
-                        Text("space to toggle\nenter to exit\ntab to reset\nclick here for button info")
-                            .font(.custom("Rubik", size: 20))
-                            .lineSpacing(7)
-                            .multilineTextAlignment(.leading)
-                        Spacer().frame(height: 10)
-                    }
-                    .frame(width: 300, height: 150)
-                    .background(.black)
-                    .onTapGesture {
-                        showHelp = true
-                    }
-                }
-                Spacer()
-            }
-            if showHelp {
+            Spacer()
+            if manager.showInfo {
                 Rectangle()
                     .background(.black)
                     .opacity(0.6)
                     .onTapGesture {
-                        showHelp = false
+                        manager.showInfo = false
                     }
                 HStack(spacing: 0) {
                     Spacer()
@@ -48,6 +30,8 @@ struct HelpView: View {
                             Spacer()
                             VStack(spacing: 20) {
                                 Spacer()
+                                Text("space to toggle\nenter to exit\ntab to reset\nclick here for button info")
+                                Spacer().frame(height: 20)
                                 Text("y'    D'    L'    x     z'        B     B'    R     D     y")
                                 Text("y'    D     L     U'    F'        F     U     R'    D'    y")
                                 Text("M     M'    E     x'    S'        S     z     E'    M'    M")

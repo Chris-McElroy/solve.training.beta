@@ -8,14 +8,16 @@
 import SwiftUI
 import Combine
 
+let chris: Bool = true
+
 class Manager: ObservableObject {
     static var main = Manager()
     
     @Published var view: ViewOptions = .freeCube
+    @Published var showInfo: Bool = false
     @Published var trainingEndCard: Bool = false
     
-    @Published var cases: [Case] = methods[0].cases // forChris
-//    @Published var cases: [Case] = methods[1].cases // forTim
+    @Published var cases: [Case] = chris ? methods[0].cases : methods[1].cases
     @Published var currentCase: TrainingCase? = nil
     @Published var currentCaseIndex: Int? = nil
     
