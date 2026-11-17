@@ -16,7 +16,7 @@ struct FreeCubeView: View {
             HStack {
                 Spacer()
                 manager.cubeView
-                    .frame(maxWidth: 800, maxHeight: 800)
+                    .frame(maxWidth: 600, maxHeight: 600)
                     .scaledToFit()
                     .minimumScaleFactor(0.01)
                 Spacer()

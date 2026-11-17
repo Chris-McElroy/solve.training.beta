@@ -11,48 +11,7 @@ struct TrainingView: View {
     @ObservedObject var manager = Manager.main
     
     var body: some View {
-        ZStack {
-            HStack {
-                Spacer()
-                VStack {
-                    Spacer()
-                    manager.cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
-                        .frame(maxWidth: 800, maxHeight: 800)
-                        .scaledToFit()
-                        .minimumScaleFactor(0.01)
-                        .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (!manager.success) ? 1 : 0)
-                    Spacer()
-                }
-                Spacer()
-            }
-            VStack {
-                Spacer().frame(minHeight: 200)
-                Text(manager.currentCase?.base.name ?? "")
-                    .frame(minWidth: 300, maxWidth: 500, minHeight: 25, maxHeight: 150)
-                    .scaledToFit()
-                    .font(.custom("Rubik-Bold", size: 100))
-                    .opacity((manager.trainingMode == .learning || !manager.success) ? 1 : 0)
-                Spacer().frame(height: 400)
-                HStack(spacing: 0) {
-                    Spacer()
-                    Text(manager.completedText)
-                        .foregroundStyle(.green)
-                    Text(manager.currentText)
-                        .foregroundStyle((manager.mistake) ? .red : .white)
-                        .opacity((manager.trainingMode == .learning) || (!manager.success) ? 1 : 0)
-                    Text(manager.upcomingText)
-                        .foregroundStyle(.tertiary)
-                        .opacity((manager.trainingMode == .learning || (!manager.success)) ? 1 : 0)
-                    Spacer()
-                }
-                .font(.custom("Rubik-Regular", size: 80))
-                .frame(minHeight: 25)
-                Spacer()
-                    .frame(minHeight: 200)
-            }
-            .scaledToFit()
-            .minimumScaleFactor(0.01)
-            .lineLimit(1)
+        VStack {
             if manager.trainingEndCard {
                 HStack {
                     Spacer()
@@ -74,19 +33,46 @@ struct TrainingView: View {
                         Spacer().frame(height: 40)
                         Text("space to retrain")
                             .font(.custom("Rubik-Regular", size: 50))
-//                            .padding(.horizontal, 60)
-//                            .padding(.vertical, 35)
-//                            .background(Color(hue: 0.842, saturation: 1, brightness: 1))
-//                            .cornerRadius(10)
-//                            .onTapGesture {
-//                                startNewTraining()
-//                            }
+                        //                            .padding(.horizontal, 60)
+                        //                            .padding(.vertical, 35)
+                        //                            .background(Color(hue: 0.842, saturation: 1, brightness: 1))
+                        //                            .cornerRadius(10)
+                        //                            .onTapGesture {
+                        //                                startNewTraining()
+                        //                            }
                         // laterDO add exit button
                         Spacer()
                     }
                     Spacer()
                 }
-                .background(.black)
+            } else {
+                HStack {
+                    Spacer()
+                    VStack {
+                        Spacer()
+                        Text(manager.currentCase?.base.name ?? "")
+                            .frame(minWidth: 200, maxWidth: 800, minHeight: 40, maxHeight: 150)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.01)
+                            .font(.custom("Rubik-Bold", size: 100))
+                            .opacity((manager.trainingMode == .learning || !manager.success) ? 1 : 0)
+                        Spacer()
+                        HStack {
+                            Spacer()
+                                manager.cubeView  // laterDO check that i'm not making way too many cubies or maintatining them after the cubeview leaves. could consider having it only ever be one cube but that seems bad
+                                .frame(minWidth: 250, maxWidth: 600, minHeight: 250, maxHeight: 600)
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.01)
+                                    .opacity(!(manager.started) || (manager.trainingMode != .noCube) || (!manager.success) ? 1 : 0)
+                            Spacer()
+                        }
+                        Spacer()
+                        textView
+                        Spacer()
+                    }
+                    .lineLimit(1)
+                    Spacer()
+                }
             }
         }
         .padding(.all)
@@ -94,6 +80,23 @@ struct TrainingView: View {
         .onAppear() {
             manager.startNewTraining()
         }
+    }
+    
+    var textView: some View {
+        HStack(spacing: 0) {
+            Spacer()
+            Text(manager.completedText)
+                .foregroundStyle(.green) +
+            Text(manager.currentText)
+                .foregroundStyle((manager.trainingMode == .learning) || (!manager.success) ? ((manager.mistake) ? .red : .white) : .black) +
+            Text(manager.upcomingText)
+                .foregroundStyle((manager.trainingMode == .learning || (!manager.success)) ? .gray.opacity(0.5) : .black)
+            Spacer()
+        }
+        .font(.custom("Rubik-Regular", size: 80))
+        .frame(minWidth: 300, maxWidth: 1200, minHeight: 40, maxHeight: 100)
+        .scaledToFit()
+        .minimumScaleFactor(0.01)
     }
 }
 
