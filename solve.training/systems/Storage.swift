@@ -150,7 +150,7 @@ let methods: [Method] = [
             
             // u
             Case(ID: "ua-p", name: "ua-p", step: "c2", group: "ua", status: .training,
-                 alg: Alg("r' F R2 F' L F R2' x'")!, postmoves: Alg(),
+                 alg: Alg("r' F R2 F' L F R2' x")!, postmoves: Alg(),
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
             Case(ID: "ua-o", name: "ua-o", step: "c2", group: "ua", status: .learned,
                  alg: Alg("x' D' R U' R' D R U R' x")!, postmoves: Alg("U2")!,
