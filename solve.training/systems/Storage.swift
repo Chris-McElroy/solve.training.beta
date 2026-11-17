@@ -112,7 +112,7 @@ let methods: [Method] = [
                  alg: Alg("L' U L D' L' U2 L D L' U L")!, postmoves: Alg("U2")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
             Case(ID: "sa-o", name: "sa-o", step: "2c", group: "sa", status: .training,
-                 alg: Alg("R U2 R D R' U R D' R' U R'")!, postmoves: Alg("U'")!,
+                 alg: Alg("R U2' R D R' U R D' R' U R'")!, postmoves: Alg("U'")!,
                  setup: c2Setup,  postScramble: c2PostScramble, highlights: c2Highlights),
             Case(ID: "sa-c", name: "sa-c", step: "2c", group: "sa", status: .training,
                  alg: Alg("R U R D R' U2 R D' R' U R'")!, postmoves: Alg("U'")!,
