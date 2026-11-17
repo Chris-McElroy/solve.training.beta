@@ -4,6 +4,14 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>Resources/AppIcon.icns</key>
+		<data>
+		AAYyL/PrEdDwCC5gU6q9ciVaxb0=
+		</data>
+		<key>Resources/Assets.car</key>
+		<data>
+		+3XtGfvL961tBBPIblEa668J5P8=
+		</data>
 		<key>Resources/OFL.txt</key>
 		<data>
 		RbDUcPzUfyQFe80wQpdbBf8ZDdE=
@@ -92,10 +100,24 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			C/Z6bacT2ckZPjhf/Vh7dClFLzw=
+			5nPOv2VpGJ5hqAwHLdzdjD17mgU=
 			</data>
 			<key>requirement</key>
 			<string>identifier "solve.training.debug" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: Christopher McElroy (L3YW8QH45B)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
+		</dict>
+		<key>Resources/AppIcon.icns</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			g4Yms2bCn7lwIs+VKp/+oeP3chMCqxqlVuYIdpChro0=
+			</data>
+		</dict>
+		<key>Resources/Assets.car</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			BqylxvcK1OQtycyZyvI6bGLD9eaolzYgz3E9oLLrO48=
+			</data>
 		</dict>
 		<key>Resources/OFL.txt</key>
 		<dict>

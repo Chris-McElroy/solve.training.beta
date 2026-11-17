@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-let chris: Bool = true
+let chris: Bool = false
 
 class Manager: ObservableObject {
     static var main = Manager()
